@@ -14,7 +14,7 @@
 
 ## 🖼️ Portfolio Images
 ### Photo
-![Picture of my car](IMG_2937.jpg)
+![The type of car I had](acura.jpg)
 
 ### Personal Photo
 ![Snowboarding at Blue Mountain](IMG_8972.jpg)
