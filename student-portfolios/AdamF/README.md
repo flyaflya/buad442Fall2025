@@ -18,6 +18,6 @@
 ![Skydiving](skydiving.jpeg)
 
 ### Views from Hiking in Australia!
-![Hiking](student-portfolios\uluru.jpeg)
+![Hiking](uluru.jpeg)
 
 
