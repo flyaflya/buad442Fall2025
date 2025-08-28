@@ -1,4 +1,4 @@
-# 👨‍🎓 Student Portfolio - Adam 🚴
+# 👨‍🎓 Student Portfolio - Sylas 🐢
 
 ---
 
@@ -6,18 +6,18 @@
 
 | **Field** | **Details** |
 |-----------|-------------|
-| **Nickname/Pseudonym** | Adam |
-| **Interesting Fact** | Inventor of "The Invisible Pool Toy" - hold a patent for it. |
-| **Interesting Fact2** | I like biking in cities and on gravel rail trails. |
+| **Nickname/Pseudonym** | Sylas |
+| **Interesting Fact** | I've gone skydiving! |
+| **Interesting Fact2** | I'm working on becoming a better cook this semester. |
 
 ---
 
 ## 🖼️ Portfolio Images
 
-### My Invention: The Invisible Pool Toy
-![The Invisible Pool Toy](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpU-_uS7d7czuDb5wBpTui3ahBAFzJAIMpJA&s)
+### Skydiving!
+![Skydiving](skydiving.jpeg)
 
-### Personal Photo
-![Adam - With family on the Rehoboth-Lewes Beach Bike Trail](IMG_1783.png)
+### Views from Hiking in Australia!
+![Hiking](student-portfolios\uluru.jpeg)
 
 
