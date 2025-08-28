@@ -15,7 +15,7 @@
 ## 🖼️ Portfolio Images
 
 ### My trip last winter to Canada skiing
-![Pictures of the mountains!](IMG_0933.HEIC)
+![Pictures of the mountains!](IMG_0933.jpg)
 
 ### Personal Photo
 ![A picture of me and my brothers around the holidays](IMG_1783.png)
