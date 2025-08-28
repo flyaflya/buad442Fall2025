@@ -14,7 +14,7 @@
 
 ## 🖼️ Portfolio Images
 ### Photo
-![Picture of my car](F5738267.heic)
+![Picture of my car](IMG_2937.jpg)
 
 ### Personal Photo
 ![Snowboarding at Blue Mountain](IMG_8972.jpg)
