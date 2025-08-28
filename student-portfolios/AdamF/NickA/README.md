@@ -7,8 +7,8 @@
 | **Field** | **Details** |
 |-----------|-------------|
 | **NickA** | Nick |
-| **Interesting Fact** | I've studied abroad in Paris. |
-| **Interesting Fact2** | I really enjoy watching football. |
+| **Interesting Fact** | I've studied abroad in Paris |
+| **Interesting Fact2** | I really enjoy watching football |
 
 ---
 
@@ -18,6 +18,6 @@
 ![Snowboarding](IMG_5616)
 
 ### Personal Photo
-![Adam - With family on the Rehoboth-Lewes Beach Bike Trail](IMG_5615)
+![Nick - My family at my sisters graduation.](IMG_5615)
 
 
