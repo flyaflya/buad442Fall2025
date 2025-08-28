@@ -15,7 +15,7 @@
 ## 🖼️ Portfolio Images
 
 ### Hobby: Video Games
-![alt text](videogames.jpg)
+![Gaming](videogames.jpg)
 
 ### Studying Image
 ![Studying](studying.jpg)
