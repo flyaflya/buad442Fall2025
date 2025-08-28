@@ -14,10 +14,10 @@
 
 ## 🖼️ Portfolio Images
 
-### My Invention: The Invisible Pool Toy
+### Studying abroad in Rome!
 ![This is me in Rome!](CIMG4845.jpeg)
 
-### Personal Photo
+### Photo of my Cat
 ![This is one of my cats! His name is Bubba](bubba.png)
 
 
