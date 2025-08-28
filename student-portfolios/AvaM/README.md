@@ -1,4 +1,4 @@
-# 👨‍🎓 Student Portfolio - Ava 
+# 👨‍🎓 Student Portfolio - Ava Malley
 
 ---
 
