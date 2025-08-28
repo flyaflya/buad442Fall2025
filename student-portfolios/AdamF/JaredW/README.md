@@ -1,4 +1,4 @@
-# 👨‍🎓 Student Portfolio Example - Adam
+# 👨‍🎓 Student Portfolio - Jared
 
 ---
 
