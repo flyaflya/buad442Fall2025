@@ -1,0 +1,11 @@
+---
+title: "My First Quarto Document"
+format: html
+---
+
+# Hello World! 👋
+This is my first Quarto document. My nick name is NickA.
+
+## About Me
+
+I have a strong passion for football and play as a wide receiver. I love the strategic aspects of the game and the athleticism required to excel at my position. As a wide receiver, I focus on route running, catching passes, and creating separation from defenders. The position requires both physical skills like speed and agility, as well as mental preparation to read defenses and execute plays effectively. Football has taught me valuable lessons about teamwork, discipline, and perseverance that extend beyond the field.
