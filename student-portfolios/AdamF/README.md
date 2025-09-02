@@ -1,4 +1,4 @@
-# 👨‍🎓 Student Portfolio - Adam 🚴
+# 👨‍🎓 Student Portfolio - Chance 🏒
 
 ---
 
@@ -6,18 +6,19 @@
 
 | **Field** | **Details** |
 |-----------|-------------|
-| **Nickname/Pseudonym** | Adam |
-| **Interesting Fact** | Inventor of "The Invisible Pool Toy" - hold a patent for it. |
-| **Interesting Fact2** | I like biking in cities and on gravel rail trails. |
+| **Nickname/Pseudonym** | Chance |
+| **Interesting Fact** | I am a member of the Men's Ice Hockey Team. |
+| **Interesting Fact2** | I like going to the beach and seeing my friends. |
 
 ---
 
 ## 🖼️ Portfolio Images
 
-### My Invention: The Invisible Pool Toy
-![The Invisible Pool Toy](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpU-_uS7d7czuDb5wBpTui3ahBAFzJAIMpJA&s)
+### My Passion: Ice Hockey
+![Game Picture](XO0A9083.jpg)
 
-### Personal Photo
-![Adam - With family on the Rehoboth-Lewes Beach Bike Trail](IMG_1783.png)
+
+### Beach Photo
+![Favorite Vacation Spot in Cancun](image.png)
 
 
