@@ -18,6 +18,6 @@
 ![Pictures of the mountains!](IMG_0933.jpg)
 
 ### Personal Photo
-![A picture of me and my brothers around the holidays](IMG_1783.png)
+![A picture of me and my brothers around the holidays](IMG_8485.JPG)
 
 
