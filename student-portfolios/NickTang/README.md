@@ -15,9 +15,9 @@
 ## 🖼️ Portfolio Images
 
 ### Me on the mountain
-![Blue Mountain](IMG_2534.jpeg)
+![Blue Mountain](Background.jpeg)
 
 ### Korea Scenery
-![Korea](IMG_4908.jpeg)
+![Korea](Snowboard.jpeg)
 
 
