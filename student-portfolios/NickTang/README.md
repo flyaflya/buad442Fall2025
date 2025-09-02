@@ -14,10 +14,10 @@
 
 ## 🖼️ Portfolio Images
 
-### Me on the mountain
+### Korea Scenery
 ![Blue Mountain](Background.jpeg)
 
-### Korea Scenery
+### Me on the mountain
 ![Korea](Snowboard.jpeg)
 
 
