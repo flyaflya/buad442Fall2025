@@ -9,6 +9,7 @@ This README is automatically generated and updated when changes are made to stud
 | Student | Nickname | Interesting Facts | Portfolio |
 |---------|----------|-------------------|-----------|
 | AdamF | Adam | Inventor of "The Invisible Pool Toy" - hold a pate...<br>I like biking in cities and on gravel rail trails. | [View Portfolio](AdamF/README.md) |
+| AvaM | Ava | I studied abroad in Rome last semester!<br>I have two cats. | [View Portfolio](AvaM/README.md) |
 | JaredW | Jared | I enjoy learning new subjects.<br>I like drawing and playing video games. | [View Portfolio](JaredW/README.md) |
 | MichaelS | Michael | I've been to 5 continents!<br>My work has been featured in an art exhibition | [View Portfolio](MichaelS/README.md) |
 
