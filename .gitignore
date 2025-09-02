@@ -7,14 +7,19 @@
 ehthumbs.db
 Thumbs.db
 
-# Large media files (if you want to exclude them)
-*.jpeg
-*.jpg
-*.png
-*.gif
-*.mp4
-*.mov
-*.avi
+# Large media files (exclude from root level, but allow in portfolios)
+/*.jpeg
+/*.jpg
+/*.png
+/*.gif
+/*.mp4
+/*.mov
+/*.avi
+
+# Allow images in student portfolios
+!student-portfolios/*/README.md
+!student-portfolios/*/*.jpeg
+!student-portfolios/*/*.jpg
 
 # IDE files
 .vscode/
