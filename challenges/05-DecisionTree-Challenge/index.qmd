@@ -59,7 +59,7 @@ We are analyzing the Ames Housing dataset which contains detailed information ab
 ::: {.callout-important}
 ## 🎯 Note on Python Usage
 
-You have not been coached through setting up a Python environment.  You will need to set up a Python environment and install the necessary packages to run this code.  Alternatively, delete the Python code and only leave the remaining R code that is provided.  You can see the executed Python output at my GitHub pages site: [https://flyaflya.github.io/decTreeChallenge/](https://flyaflya.github.io/decTreeChallenge/).
+You have not been coached through setting up a Python environment.  You will need to set up a Python environment and install the necessary packages to run this code - takes about 15 minutes; see [https://quarto.org/docs/projects/virtual-environments.html](https://quarto.org/docs/projects/virtual-environments.html).  Alternatively, delete the Python code and only leave the remaining R code that is provided.  You can see the executed Python output at my GitHub pages site: [https://flyaflya.github.io/decTreeChallenge/](https://flyaflya.github.io/decTreeChallenge/).
 
 :::
 
