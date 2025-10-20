@@ -5388,43 +5388,56 @@ document.querySelectorAll('.fa-regular.fa-copy').forEach(function(element) {
 <span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>tree_very_complex <span class="ot">&lt;-</span> <span class="fu">rpart</span>(SalePrice <span class="sc">~</span> ., <span class="at">data =</span> train_data, </span>
 <span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>                          <span class="at">control =</span> <span class="fu">rpart.control</span>(<span class="at">maxdepth =</span> <span class="dv">20</span>, <span class="at">minsplit =</span> <span class="dv">2</span>, <span class="at">minbucket =</span> <span class="dv">1</span>))</span>
 <span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate predictions</span></span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>pred_simple <span class="ot">&lt;-</span> <span class="fu">predict</span>(tree_simple, test_data)</span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>pred_medium <span class="ot">&lt;-</span> <span class="fu">predict</span>(tree_medium, test_data)</span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>pred_complex <span class="ot">&lt;-</span> <span class="fu">predict</span>(tree_complex, test_data)</span>
-<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>pred_very_complex <span class="ot">&lt;-</span> <span class="fu">predict</span>(tree_very_complex, test_data)</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate predictions for test data</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>pred_simple_test <span class="ot">&lt;-</span> <span class="fu">predict</span>(tree_simple, test_data)</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>pred_medium_test <span class="ot">&lt;-</span> <span class="fu">predict</span>(tree_medium, test_data)</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>pred_complex_test <span class="ot">&lt;-</span> <span class="fu">predict</span>(tree_complex, test_data)</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>pred_very_complex_test <span class="ot">&lt;-</span> <span class="fu">predict</span>(tree_very_complex, test_data)</span>
 <span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate RMSE for each tree</span></span>
-<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>rmse_tree_simple <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>((test_data<span class="sc">$</span>SalePrice <span class="sc">-</span> pred_simple)<span class="sc">^</span><span class="dv">2</span>))</span>
-<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>rmse_tree_medium <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>((test_data<span class="sc">$</span>SalePrice <span class="sc">-</span> pred_medium)<span class="sc">^</span><span class="dv">2</span>))</span>
-<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>rmse_tree_complex <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>((test_data<span class="sc">$</span>SalePrice <span class="sc">-</span> pred_complex)<span class="sc">^</span><span class="dv">2</span>))</span>
-<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>rmse_tree_very_complex <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>((test_data<span class="sc">$</span>SalePrice <span class="sc">-</span> pred_very_complex)<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate predictions for training data</span></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>pred_simple_train <span class="ot">&lt;-</span> <span class="fu">predict</span>(tree_simple, train_data)</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>pred_medium_train <span class="ot">&lt;-</span> <span class="fu">predict</span>(tree_medium, train_data)</span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>pred_complex_train <span class="ot">&lt;-</span> <span class="fu">predict</span>(tree_complex, train_data)</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>pred_very_complex_train <span class="ot">&lt;-</span> <span class="fu">predict</span>(tree_very_complex, train_data)</span>
 <span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate R-squared</span></span>
-<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>r2_tree_simple <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">sum</span>((test_data<span class="sc">$</span>SalePrice <span class="sc">-</span> pred_simple)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> <span class="fu">sum</span>((test_data<span class="sc">$</span>SalePrice <span class="sc">-</span> <span class="fu">mean</span>(test_data<span class="sc">$</span>SalePrice))<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>r2_tree_medium <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">sum</span>((test_data<span class="sc">$</span>SalePrice <span class="sc">-</span> pred_medium)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> <span class="fu">sum</span>((test_data<span class="sc">$</span>SalePrice <span class="sc">-</span> <span class="fu">mean</span>(test_data<span class="sc">$</span>SalePrice))<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>r2_tree_complex <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">sum</span>((test_data<span class="sc">$</span>SalePrice <span class="sc">-</span> pred_complex)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> <span class="fu">sum</span>((test_data<span class="sc">$</span>SalePrice <span class="sc">-</span> <span class="fu">mean</span>(test_data<span class="sc">$</span>SalePrice))<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>r2_tree_very_complex <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">sum</span>((test_data<span class="sc">$</span>SalePrice <span class="sc">-</span> pred_very_complex)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> <span class="fu">sum</span>((test_data<span class="sc">$</span>SalePrice <span class="sc">-</span> <span class="fu">mean</span>(test_data<span class="sc">$</span>SalePrice))<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate RMSE for test data</span></span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>rmse_tree_simple_test <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>((test_data<span class="sc">$</span>SalePrice <span class="sc">-</span> pred_simple_test)<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>rmse_tree_medium_test <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>((test_data<span class="sc">$</span>SalePrice <span class="sc">-</span> pred_medium_test)<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>rmse_tree_complex_test <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>((test_data<span class="sc">$</span>SalePrice <span class="sc">-</span> pred_complex_test)<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>rmse_tree_very_complex_test <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>((test_data<span class="sc">$</span>SalePrice <span class="sc">-</span> pred_very_complex_test)<span class="sc">^</span><span class="dv">2</span>))</span>
 <span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Create comparison data frame</span></span>
-<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a>tree_comparison <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">Model =</span> <span class="fu">c</span>(<span class="st">"Simple Tree"</span>, <span class="st">"Medium Tree"</span>, <span class="st">"Complex Tree"</span>, <span class="st">"Very Complex Tree"</span>),</span>
-<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">Max_Depth =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>),</span>
-<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">RMSE =</span> <span class="fu">c</span>(rmse_tree_simple, rmse_tree_medium, rmse_tree_complex, rmse_tree_very_complex),</span>
-<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">R_squared =</span> <span class="fu">c</span>(r2_tree_simple, r2_tree_medium, r2_tree_complex, r2_tree_very_complex)</span>
-<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-38"><a href="#cb21-38" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Decision Tree Performance (showing overfitting):"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate RMSE for training data</span></span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a>rmse_tree_simple_train <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>((train_data<span class="sc">$</span>SalePrice <span class="sc">-</span> pred_simple_train)<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a>rmse_tree_medium_train <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>((train_data<span class="sc">$</span>SalePrice <span class="sc">-</span> pred_medium_train)<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a>rmse_tree_complex_train <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>((train_data<span class="sc">$</span>SalePrice <span class="sc">-</span> pred_complex_train)<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a>rmse_tree_very_complex_train <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>((train_data<span class="sc">$</span>SalePrice <span class="sc">-</span> pred_very_complex_train)<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate R-squared for test data</span></span>
+<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a>r2_tree_simple <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">sum</span>((test_data<span class="sc">$</span>SalePrice <span class="sc">-</span> pred_simple_test)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> <span class="fu">sum</span>((test_data<span class="sc">$</span>SalePrice <span class="sc">-</span> <span class="fu">mean</span>(test_data<span class="sc">$</span>SalePrice))<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb21-38"><a href="#cb21-38" aria-hidden="true" tabindex="-1"></a>r2_tree_medium <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">sum</span>((test_data<span class="sc">$</span>SalePrice <span class="sc">-</span> pred_medium_test)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> <span class="fu">sum</span>((test_data<span class="sc">$</span>SalePrice <span class="sc">-</span> <span class="fu">mean</span>(test_data<span class="sc">$</span>SalePrice))<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb21-39"><a href="#cb21-39" aria-hidden="true" tabindex="-1"></a>r2_tree_complex <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">sum</span>((test_data<span class="sc">$</span>SalePrice <span class="sc">-</span> pred_complex_test)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> <span class="fu">sum</span>((test_data<span class="sc">$</span>SalePrice <span class="sc">-</span> <span class="fu">mean</span>(test_data<span class="sc">$</span>SalePrice))<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb21-40"><a href="#cb21-40" aria-hidden="true" tabindex="-1"></a>r2_tree_very_complex <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">sum</span>((test_data<span class="sc">$</span>SalePrice <span class="sc">-</span> pred_very_complex_test)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> <span class="fu">sum</span>((test_data<span class="sc">$</span>SalePrice <span class="sc">-</span> <span class="fu">mean</span>(test_data<span class="sc">$</span>SalePrice))<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb21-41"><a href="#cb21-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-42"><a href="#cb21-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Create comparison data frame</span></span>
+<span id="cb21-43"><a href="#cb21-43" aria-hidden="true" tabindex="-1"></a>tree_comparison <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb21-44"><a href="#cb21-44" aria-hidden="true" tabindex="-1"></a>  <span class="at">Model =</span> <span class="fu">c</span>(<span class="st">"Simple Tree"</span>, <span class="st">"Medium Tree"</span>, <span class="st">"Complex Tree"</span>, <span class="st">"Very Complex Tree"</span>),</span>
+<span id="cb21-45"><a href="#cb21-45" aria-hidden="true" tabindex="-1"></a>  <span class="at">Max_Depth =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>),</span>
+<span id="cb21-46"><a href="#cb21-46" aria-hidden="true" tabindex="-1"></a>  <span class="at">RMSE_Test =</span> <span class="fu">c</span>(rmse_tree_simple_test, rmse_tree_medium_test, rmse_tree_complex_test, rmse_tree_very_complex_test),</span>
+<span id="cb21-47"><a href="#cb21-47" aria-hidden="true" tabindex="-1"></a>  <span class="at">RMSE_Train =</span> <span class="fu">c</span>(rmse_tree_simple_train, rmse_tree_medium_train, rmse_tree_complex_train, rmse_tree_very_complex_train),</span>
+<span id="cb21-48"><a href="#cb21-48" aria-hidden="true" tabindex="-1"></a>  <span class="at">R_squared =</span> <span class="fu">c</span>(r2_tree_simple, r2_tree_medium, r2_tree_complex, r2_tree_very_complex)</span>
+<span id="cb21-49"><a href="#cb21-49" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-50"><a href="#cb21-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-51"><a href="#cb21-51" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Decision Tree Performance (showing overfitting):"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Decision Tree Performance (showing overfitting):"</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(tree_comparison)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>              Model Max_Depth     RMSE R_squared
-1       Simple Tree         2 52102.83 0.5731516
-2       Medium Tree         5 44286.01 0.6916215
-3      Complex Tree        10 48756.32 0.6262227
-4 Very Complex Tree        20 48756.32 0.6262227</code></pre>
+<pre><code>              Model Max_Depth RMSE_Test RMSE_Train R_squared
+1       Simple Tree         2  52102.83   45720.03 0.5731516
+2       Medium Tree         5  44286.01   37181.02 0.6916215
+3      Complex Tree        10  48756.32   35574.75 0.6262227
+4 Very Complex Tree        20  48756.32   35574.75 0.6262227</code></pre>
 </div>
 </div>
 </div>
@@ -7822,43 +7835,56 @@ document.querySelectorAll('.fa-regular.fa-copy').forEach(function(element) {
 });
 </script>
 </div>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate predictions</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>pred_simple <span class="op">=</span> tree_simple.predict(X_test)</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>pred_medium <span class="op">=</span> tree_medium.predict(X_test)</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>pred_complex <span class="op">=</span> tree_complex.predict(X_test)</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>pred_very_complex <span class="op">=</span> tree_very_complex.predict(X_test)</span>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate predictions for test data</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>pred_simple_test <span class="op">=</span> tree_simple.predict(X_test)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>pred_medium_test <span class="op">=</span> tree_medium.predict(X_test)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>pred_complex_test <span class="op">=</span> tree_complex.predict(X_test)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>pred_very_complex_test <span class="op">=</span> tree_very_complex.predict(X_test)</span>
 <span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate performance metrics</span></span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>rmse_tree_simple <span class="op">=</span> np.sqrt(mean_squared_error(y_test, pred_simple))</span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>rmse_tree_medium <span class="op">=</span> np.sqrt(mean_squared_error(y_test, pred_medium))</span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>rmse_tree_complex <span class="op">=</span> np.sqrt(mean_squared_error(y_test, pred_complex))</span>
-<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>rmse_tree_very_complex <span class="op">=</span> np.sqrt(mean_squared_error(y_test, pred_very_complex))</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate predictions for training data</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>pred_simple_train <span class="op">=</span> tree_simple.predict(X_train)</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>pred_medium_train <span class="op">=</span> tree_medium.predict(X_train)</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>pred_complex_train <span class="op">=</span> tree_complex.predict(X_train)</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>pred_very_complex_train <span class="op">=</span> tree_very_complex.predict(X_train)</span>
 <span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>r2_tree_simple <span class="op">=</span> r2_score(y_test, pred_simple)</span>
-<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>r2_tree_medium <span class="op">=</span> r2_score(y_test, pred_medium)</span>
-<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>r2_tree_complex <span class="op">=</span> r2_score(y_test, pred_complex)</span>
-<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>r2_tree_very_complex <span class="op">=</span> r2_score(y_test, pred_very_complex)</span>
-<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Create comparison data frame</span></span>
-<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>tree_comparison_data <span class="op">=</span> {</span>
-<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Model'</span>: [<span class="st">'Simple Tree'</span>, <span class="st">'Medium Tree'</span>, <span class="st">'Complex Tree'</span>, <span class="st">'Very Complex Tree'</span>],</span>
-<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Max_Depth'</span>: [<span class="dv">2</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>],</span>
-<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">'RMSE'</span>: [rmse_tree_simple, rmse_tree_medium, rmse_tree_complex, rmse_tree_very_complex],</span>
-<span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">'R_squared'</span>: [r2_tree_simple, r2_tree_medium, r2_tree_complex, r2_tree_very_complex]</span>
-<span id="cb29-24"><a href="#cb29-24" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb29-25"><a href="#cb29-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-26"><a href="#cb29-26" aria-hidden="true" tabindex="-1"></a>tree_comparison_df <span class="op">=</span> pd.DataFrame(tree_comparison_data)</span>
-<span id="cb29-27"><a href="#cb29-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Decision Tree Performance (showing overfitting):"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate performance metrics for test data</span></span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>rmse_tree_simple_test <span class="op">=</span> np.sqrt(mean_squared_error(y_test, pred_simple_test))</span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>rmse_tree_medium_test <span class="op">=</span> np.sqrt(mean_squared_error(y_test, pred_medium_test))</span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>rmse_tree_complex_test <span class="op">=</span> np.sqrt(mean_squared_error(y_test, pred_complex_test))</span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>rmse_tree_very_complex_test <span class="op">=</span> np.sqrt(mean_squared_error(y_test, pred_very_complex_test))</span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate performance metrics for training data</span></span>
+<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a>rmse_tree_simple_train <span class="op">=</span> np.sqrt(mean_squared_error(y_train, pred_simple_train))</span>
+<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>rmse_tree_medium_train <span class="op">=</span> np.sqrt(mean_squared_error(y_train, pred_medium_train))</span>
+<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a>rmse_tree_complex_train <span class="op">=</span> np.sqrt(mean_squared_error(y_train, pred_complex_train))</span>
+<span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a>rmse_tree_very_complex_train <span class="op">=</span> np.sqrt(mean_squared_error(y_train, pred_very_complex_train))</span>
+<span id="cb29-24"><a href="#cb29-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-25"><a href="#cb29-25" aria-hidden="true" tabindex="-1"></a>r2_tree_simple <span class="op">=</span> r2_score(y_test, pred_simple_test)</span>
+<span id="cb29-26"><a href="#cb29-26" aria-hidden="true" tabindex="-1"></a>r2_tree_medium <span class="op">=</span> r2_score(y_test, pred_medium_test)</span>
+<span id="cb29-27"><a href="#cb29-27" aria-hidden="true" tabindex="-1"></a>r2_tree_complex <span class="op">=</span> r2_score(y_test, pred_complex_test)</span>
+<span id="cb29-28"><a href="#cb29-28" aria-hidden="true" tabindex="-1"></a>r2_tree_very_complex <span class="op">=</span> r2_score(y_test, pred_very_complex_test)</span>
+<span id="cb29-29"><a href="#cb29-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-30"><a href="#cb29-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Create comparison data frame</span></span>
+<span id="cb29-31"><a href="#cb29-31" aria-hidden="true" tabindex="-1"></a>tree_comparison_data <span class="op">=</span> {</span>
+<span id="cb29-32"><a href="#cb29-32" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Model'</span>: [<span class="st">'Simple Tree'</span>, <span class="st">'Medium Tree'</span>, <span class="st">'Complex Tree'</span>, <span class="st">'Very Complex Tree'</span>],</span>
+<span id="cb29-33"><a href="#cb29-33" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Max_Depth'</span>: [<span class="dv">2</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>],</span>
+<span id="cb29-34"><a href="#cb29-34" aria-hidden="true" tabindex="-1"></a>    <span class="st">'RMSE_Test'</span>: [rmse_tree_simple_test, rmse_tree_medium_test, rmse_tree_complex_test, rmse_tree_very_complex_test],</span>
+<span id="cb29-35"><a href="#cb29-35" aria-hidden="true" tabindex="-1"></a>    <span class="st">'RMSE_Train'</span>: [rmse_tree_simple_train, rmse_tree_medium_train, rmse_tree_complex_train, rmse_tree_very_complex_train],</span>
+<span id="cb29-36"><a href="#cb29-36" aria-hidden="true" tabindex="-1"></a>    <span class="st">'R_squared'</span>: [r2_tree_simple, r2_tree_medium, r2_tree_complex, r2_tree_very_complex]</span>
+<span id="cb29-37"><a href="#cb29-37" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb29-38"><a href="#cb29-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-39"><a href="#cb29-39" aria-hidden="true" tabindex="-1"></a>tree_comparison_df <span class="op">=</span> pd.DataFrame(tree_comparison_data)</span>
+<span id="cb29-40"><a href="#cb29-40" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Decision Tree Performance (showing overfitting):"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Decision Tree Performance (showing overfitting):</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tree_comparison_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>               Model  Max_Depth          RMSE  R_squared
-0        Simple Tree          2  46638.437196   0.522480
-1        Medium Tree          5  38973.222615   0.666546
-2       Complex Tree         10  37795.758135   0.686390
-3  Very Complex Tree         20  41238.625967   0.626654</code></pre>
+<pre><code>               Model  Max_Depth     RMSE_Test    RMSE_Train  R_squared
+0        Simple Tree          2  46638.437196  47309.123100   0.522480
+1        Medium Tree          5  38973.222615  34620.262502   0.666546
+2       Complex Tree         10  37795.758135  16446.385109   0.686390
+3  Very Complex Tree         20  41238.625967    729.695876   0.626654</code></pre>
 </div>
 </div>
 </div>
@@ -7883,6 +7909,12 @@ document.querySelectorAll('.fa-regular.fa-copy').forEach(function(element) {
 </div>
 <div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
 <div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>(693.2110823469193, 51360.932518253845)</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(693.2110823469193, 51360.932518253845)</code></pre>
+</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
