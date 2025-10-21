@@ -13,19 +13,13 @@ execute:
 
 ## The Problem: Can Many Weak Learners Beat One Strong Learner?
 
-**Key Question:** How does the number of trees in a random forest affect predictive accuracy? Can we improve performance by simply adding more trees?
+**Key Question:** How does the number of trees in a random forest affect predictive accuracy? Can we improve performance by simply adding more trees?  How much accuracy is gained when sacrificing the interpretability of a decision tree for a random forest?  Does linear regression have comparable performance to a random forest or a complicated decision tree for **this dataset**?
 
-**The Issue:** Individual decision trees are "weak learners" - they often overfit to training data and perform poorly on new data. Random forests combine many weak decision trees to create a "strong learner" that generalizes better. But how many trees do we need? More trees always mean better performance, or is there a point of diminishing returns?
-
-::: {.callout-important}
-## 🔧 Important Data Correction
-
-**Categorical Variable Handling:** In this corrected analysis, we properly treat `zipCode` as a categorical variable rather than a numeric one. This is crucial because zip codes represent categories (locations) rather than continuous numeric values. The original analysis incorrectly treated zip codes as numeric, which could lead to inappropriate mathematical operations and poor model performance.
-
-**Impact:** This correction ensures that the random forest algorithm can properly handle the zip code feature as discrete categories, potentially improving model accuracy and providing more meaningful insights about location-based price differences.
-:::
+**The Issue:** Individual decision trees with limited depth can be considered "weak learners", there is some signal in their guesses, but it is not very strong.  Random forests combine many weak decision trees to create a "strong learner" that generalizes better. But how many trees do we need? Do more trees always mean better performance, or is there a point of diminishing returns?  How do random forests compare to linear regression and a single decision tree for this dataset?
 
 ## Data Loading and Random Forest Models
+
+We are once again analyzing the Ames Housing dataset which contains detailed information about residential properties sold in Ames, Iowa from 2006 to 2010.  It contains one categorical variable (zipCode) and many numerical variables.  A real estate dataset is expected to have a non-linear relationship between the features and the target variable (SalePrice).  For example, additional square footage in a wealthy zip code will have a different effect on the price than additional square footage in a less wealthy zip code.  Since non-linearities are anticiapted, we will use a random forest to model the relationship between the features and the target variable as decision trees and random forests are able to capture non-linear relationships.
 
 ::: {.panel-tabset}
 
@@ -706,4 +700,226 @@ The beauty of random forests is that **you can't overfit by adding more trees** 
 
 **Focus on understanding:** The key learning objective is understanding why ensemble methods work and how random forests avoid overfitting. Focus on the conceptual understanding rather than technical implementation details.
 :::
+
+---
+
+# Appendix: Random Forest vs Linear Regression Comparison
+
+## The Baseline: How Does Linear Regression Compare?
+
+To put random forest performance in context, let's compare it to a simple linear regression baseline. This helps us understand the value of the ensemble approach.
+
+## Linear Regression Models
+
+::: {.panel-tabset}
+
+### R
+
+```{r}
+#| label: linear-regression-r
+#| echo: true
+#| message: false
+#| warning: false
+
+# Build linear regression model
+lm_model <- lm(SalePrice ~ ., data = train_data)
+
+# Calculate predictions
+lm_pred_test <- predict(lm_model, test_data)
+lm_pred_train <- predict(lm_model, train_data)
+
+# Calculate performance metrics
+lm_rmse_test <- sqrt(mean((test_data$SalePrice - lm_pred_test)^2))
+lm_rmse_train <- sqrt(mean((train_data$SalePrice - lm_pred_train)^2))
+lm_r2 <- 1 - sum((test_data$SalePrice - lm_pred_test)^2) / sum((test_data$SalePrice - mean(test_data$SalePrice))^2)
+
+cat("Linear Regression Performance:\n")
+cat("Test RMSE:", round(lm_rmse_test, 2), "\n")
+cat("Train RMSE:", round(lm_rmse_train, 2), "\n")
+cat("R-squared:", round(lm_r2, 4), "\n")
+```
+
+### Python
+
+```{python}
+#| label: linear-regression-python
+#| echo: true
+
+# Build linear regression model
+from sklearn.linear_model import LinearRegression
+
+lm_model = LinearRegression()
+lm_model.fit(X_train, y_train)
+
+# Calculate predictions
+lm_pred_test = lm_model.predict(X_test)
+lm_pred_train = lm_model.predict(X_train)
+
+# Calculate performance metrics
+lm_rmse_test = np.sqrt(mean_squared_error(y_test, lm_pred_test))
+lm_rmse_train = np.sqrt(mean_squared_error(y_train, lm_pred_train))
+lm_r2 = r2_score(y_test, lm_pred_test)
+
+print("Linear Regression Performance:")
+print(f"Test RMSE: {lm_rmse_test:.2f}")
+print(f"Train RMSE: {lm_rmse_train:.2f}")
+print(f"R-squared: {lm_r2:.4f}")
+```
+
+:::
+
+## Performance Comparison: Random Forest vs Linear Regression
+
+::: {.panel-tabset}
+
+### R
+
+```{r}
+#| label: comparison-table-r
+#| echo: true
+#| message: false
+#| warning: false
+
+# Create comparison table (using performance_df from main analysis)
+comparison_data <- data.frame(
+  Model = c("Linear Regression", "Random Forest (1 tree)", "Random Forest (100 trees)", "Random Forest (1000 trees)", "Random Forest (5000 trees)"),
+  Test_RMSE = c(lm_rmse_test, performance_df$RMSE_Test[1], performance_df$RMSE_Test[4], performance_df$RMSE_Test[6], performance_df$RMSE_Test[8]),
+  Train_RMSE = c(lm_rmse_train, performance_df$RMSE_Train[1], performance_df$RMSE_Train[4], performance_df$RMSE_Train[6], performance_df$RMSE_Train[8]),
+  R_squared = c(lm_r2, performance_df$R_squared[1], performance_df$R_squared[4], performance_df$R_squared[6], performance_df$R_squared[8]),
+  Improvement_vs_LR = c(0, round((lm_rmse_test - performance_df$RMSE_Test[1])/lm_rmse_test * 100, 1), 
+                       round((lm_rmse_test - performance_df$RMSE_Test[4])/lm_rmse_test * 100, 1),
+                       round((lm_rmse_test - performance_df$RMSE_Test[6])/lm_rmse_test * 100, 1),
+                       round((lm_rmse_test - performance_df$RMSE_Test[8])/lm_rmse_test * 100, 1))
+)
+
+print("Performance Comparison:")
+print(comparison_data)
+```
+
+### Python
+
+```{python}
+#| label: comparison-table-python
+#| echo: true
+
+# Create comparison table (using performance_df from main analysis)
+comparison_data = {
+    'Model': ['Linear Regression', 'Random Forest (1 tree)', 'Random Forest (100 trees)', 'Random Forest (1000 trees)', 'Random Forest (5000 trees)'],
+    'Test_RMSE': [lm_rmse_test, performance_df['RMSE_Test'].iloc[0], performance_df['RMSE_Test'].iloc[3], performance_df['RMSE_Test'].iloc[5], performance_df['RMSE_Test'].iloc[7]],
+    'Train_RMSE': [lm_rmse_train, performance_df['RMSE_Train'].iloc[0], performance_df['RMSE_Train'].iloc[3], performance_df['RMSE_Train'].iloc[5], performance_df['RMSE_Train'].iloc[7]],
+    'R_squared': [lm_r2, performance_df['R_squared'].iloc[0], performance_df['R_squared'].iloc[3], performance_df['R_squared'].iloc[5], performance_df['R_squared'].iloc[7]],
+    'Improvement_vs_LR': [0, round((lm_rmse_test - performance_df['RMSE_Test'].iloc[0])/lm_rmse_test * 100, 1), 
+                         round((lm_rmse_test - performance_df['RMSE_Test'].iloc[3])/lm_rmse_test * 100, 1),
+                         round((lm_rmse_test - performance_df['RMSE_Test'].iloc[5])/lm_rmse_test * 100, 1),
+                         round((lm_rmse_test - performance_df['RMSE_Test'].iloc[7])/lm_rmse_test * 100, 1)]
+}
+
+comparison_df = pd.DataFrame(comparison_data)
+print("Performance Comparison:")
+print(comparison_df)
+```
+
+:::
+
+## Visual Comparison: RMSE Performance
+
+::: {.panel-tabset}
+
+### R
+
+```{r}
+#| label: comparison-plot-r
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-width: 12
+#| fig-height: 8
+
+# Create comparison visualization
+library(ggplot2)
+library(gridExtra)
+
+# Plot 1: RMSE Comparison
+p1 <- ggplot(comparison_data, aes(x = Model, y = Test_RMSE)) +
+  geom_col(fill = "steelblue", alpha = 0.7) +
+  geom_text(aes(label = round(Test_RMSE, 0)), vjust = -0.5, size = 3) +
+  labs(title = "Test RMSE Comparison: Linear Regression vs Random Forests",
+       x = "Model", y = "Test RMSE") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Plot 2: Improvement over Linear Regression
+improvement_data <- comparison_data[2:5, ] # Exclude linear regression itself
+p2 <- ggplot(improvement_data, aes(x = Model, y = Improvement_vs_LR)) +
+  geom_col(fill = "darkgreen", alpha = 0.7) +
+  geom_text(aes(label = paste0(Improvement_vs_LR, "%")), vjust = -0.5, size = 3) +
+  labs(title = "Improvement over Linear Regression",
+       x = "Random Forest Model", y = "RMSE Improvement (%)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Combine plots
+grid.arrange(p1, p2, ncol = 2)
+```
+
+### Python
+
+```{python}
+#| label: comparison-plot-python
+#| echo: false
+#| fig-width: 12
+#| fig-height: 8
+
+# Create comparison visualization
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
+
+# Plot 1: RMSE Comparison
+ax1.bar(comparison_df['Model'], comparison_df['Test_RMSE'], color='steelblue', alpha=0.7)
+ax1.set_title('Test RMSE Comparison: Linear Regression vs Random Forests')
+ax1.set_xlabel('Model')
+ax1.set_ylabel('Test RMSE')
+ax1.tick_params(axis='x', rotation=45)
+
+# Add value labels on bars
+for i, v in enumerate(comparison_df['Test_RMSE']):
+    ax1.text(i, v + 50, f'{v:.0f}', ha='center', va='bottom')
+
+# Plot 2: Improvement over Linear Regression
+improvement_df = comparison_df[1:5]  # Exclude linear regression itself
+ax2.bar(improvement_df['Model'], improvement_df['Improvement_vs_LR'], color='darkgreen', alpha=0.7)
+ax2.set_title('Improvement over Linear Regression')
+ax2.set_xlabel('Random Forest Model')
+ax2.set_ylabel('RMSE Improvement (%)')
+ax2.tick_params(axis='x', rotation=45)
+
+# Add value labels on bars
+for i, v in enumerate(improvement_df['Improvement_vs_LR']):
+    ax2.text(i, v + 0.5, f'{v:.1f}%', ha='center', va='bottom')
+
+plt.tight_layout()
+plt.show()
+```
+
+:::
+
+## Key Insights: Why Random Forests Can SometimesOutperform Linear Regression and why it didn't happen here
+
+::: {.callout-tip}
+## 🎯 Performance Summary
+
+**Linear Regression Baseline:** Provides a simple, interpretable baseline for comparison.
+
+**Random Forest Advantages:**
+1. **Non-linear Relationships:** Captures complex interactions between features that linear regression misses
+2. **Feature Interactions:** Automatically discovers relationships between variables (e.g., zip code × lot area)
+3. **Categorical Handling:** Naturally handles categorical variables like zip codes without dummy encoding
+4. **Robustness:** Less sensitive to outliers and non-normal distributions
+5. **Ensemble Effect:** Multiple trees reduce prediction variance
+
+**The Trade-off:** Random forests sacrifice interpretability for performance. Linear regression coefficients are easy to understand, while random forest predictions are "black box" models.
+:::
+
+## Conclusion
+
+The comparison shows that even a single decision tree can outperform linear regression, and the ensemble effect of random forests provides substantial additional improvements. This demonstrates the power of ensemble methods for capturing complex, non-linear relationships in real-world data.
 
