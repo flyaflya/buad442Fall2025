@@ -1,6 +1,6 @@
 ---
-title: "Decision Tree Challenge"
-subtitle: "Feature Importance and Categorical Variable Encoding"
+title: "Random Forest Challenge"
+subtitle: "The Power of Weak Learners"
 format:
   html: default
   pdf: default
@@ -9,11 +9,21 @@ execute:
   eval: true
 ---
 
-# 🌳 Decision Tree Challenge - Feature Importance and Variable Encoding
+# 🌲 Random Forest Challenge - The Power of Weak Learners
 
-## Challenge Overview
+::: {.callout-important}
+## 📊 Challenge Requirements In Section [Student Analysis Section](#student-analysis-section)
+- Use the same y-axis limits for both side-by-side plots so it clearly shows whether random forests outperform decision trees.
+- Do not `echo` the code that creates the visualization
+:::
 
-**Your Mission:** Create a simple GitHub Pages site that demonstrates how decision trees measure feature importance and analyzes the critical differences between categorical and numerical variable encoding. You'll answer two key discussion questions by adding narrative to a pre-built analysis and posting those answers to your GitHub Pages site as a rendered HTML document.
+## The Problem: Can Many Weak Learners Beat One Strong Learner?
+
+**Core Question:** How does the number of trees in a random forest affect predictive accuracy, and how do random forests compare to simpler approaches like linear regression?
+
+**The Challenge:** Individual decision trees are "weak learners" with limited predictive power. Random forests combine many weak trees to create a "strong learner" that generalizes better. But how many trees do we need? Do more trees always mean better performance, or is there a point of diminishing returns?
+
+**Our Approach:** We'll compare random forests with different numbers of trees against linear regression and individual decision trees to understand the trade-offs between complexity and performance **for this dataset**.
 
 ::: {.callout-warning}
 ## ⚠️ AI Partnership Required
@@ -23,45 +33,15 @@ This challenge pushes boundaries intentionally. You'll tackle problems that norm
 **The new reality:** The four stages of competence are Ignorance → Awareness → Learning → Mastery. AI lets us produce Mastery-level work while operating primarily in the Awareness stage. I focus on awareness training, you leverage AI for execution, and together we create outputs that used to require years of dedicated study.
 :::
 
-## The Decision Tree Problem 🎯
+## Data and Methodology
 
-> "The most important thing in communication is hearing what isn't said." - Peter Drucker
+We analyze the Ames Housing dataset, which contains detailed information about residential properties sold in Ames, Iowa from 2006 to 2010. This dataset is ideal for our analysis because:
 
-**The Core Problem:** Decision trees are often praised for their interpretability and ability to handle both numerical and categorical variables. But what happens when we encode categorical variables as numbers? How does this affect our understanding of feature importance?
+- **Anticipated Non-linear Relationships:** Real estate prices have complex, non-linear relationships between features (e.g., square footage in wealthy vs. poor zip codes affects price differently)
+- **Mixed Data Types:** Contains both categorical (zipCode) and numerical variables
+- **Real-world Complexity:** Captures the kind of messy, real-world data where ensemble methods excel
 
-**What is Feature Importance?** In decision trees, feature importance measures how much each variable contributes to reducing impurity (or improving prediction accuracy) across all splits in the tree. It's a key metric for understanding which variables matter most for your predictions.
-
-::: {.callout-important}
-## 🎯 The Key Insight: Encoding Matters for Interpretability
-
-**The problem:** When we encode categorical variables as numerical values (like 1, 2, 3, 4...), decision trees treat them as if they have a meaningful numerical order. This can completely distort our analysis.
-
-**The Real-World Context:** In real estate, we know that neighborhood quality, house style, and other categorical factors are crucial for predicting home prices. But if we encode these as numbers, we might get misleading insights about which features actually matter most.
-
-**The Devastating Reality:** Even sophisticated machine learning models can give us completely wrong insights about feature importance if we don't properly encode our variables. A categorical variable that should be among the most important might appear irrelevant, while a numerical variable might appear artificially important.
-
-:::
-
-Let's assume we want to predict house prices and understand which features matter most. The key question is: **How does encoding categorical variables as numbers affect our understanding of feature importance?**
-
-## The Ames Housing Dataset 🏠
-
-We are analyzing the Ames Housing dataset which contains detailed information about residential properties sold in Ames, Iowa from 2006 to 2010. This dataset is perfect for our analysis because it contains a categorical variable (like zip code) and numerical variables (like square footage, year built, number of bedrooms).
-
-## The Problem: ZipCode as Numerical vs Categorical
-
-**Key Question:** What happens when we treat zipCode as a numerical variable in a decision tree? How does this affect feature importance interpretation?
-
-**The Issue:** Zip codes (50010, 50011, 50012, 50013) are categorical variables representing discrete geographic areas, i.e. neighborhoods. When treated as numerical, the tree might split on "zipCode > 50012.5" - which has no meaningful interpretation for house prices.  Zip codes are non-ordinal categorical variables meaning they have no inherent order that aids house price prediction (i.e. zip code 99999 is not the priceiest zip code).
-
-## Data Loading and Model Building
-
-::: {.callout-important}
-## 🎯 Note on Python Usage
-
-You have not been coached through setting up a Python environment.  You will need to set up a Python environment and install the necessary packages to run this code - takes about 15 minutes; see [https://quarto.org/docs/projects/virtual-environments.html](https://quarto.org/docs/projects/virtual-environments.html).  Alternatively, delete the Python code and only leave the remaining R code that is provided.  You can see the executed Python output at my GitHub pages site: [https://flyaflya.github.io/decTreeChallenge/](https://flyaflya.github.io/decTreeChallenge/).
-
-:::
+Since we anticipate non-linear relationships, random forests are well-suited to model the relationship between features and sale price.
 
 ::: {.panel-tabset}
 
@@ -75,20 +55,21 @@ You have not been coached through setting up a Python environment.  You will nee
 
 # Load libraries
 suppressPackageStartupMessages(library(tidyverse))
-suppressPackageStartupMessages(library(rpart))
-if (!require(rpart.plot, quietly = TRUE)) {
-  install.packages("rpart.plot", repos = "https://cran.rstudio.com/")
-  library(rpart.plot)
-}
+suppressPackageStartupMessages(library(randomForest))
 
 # Load data
 sales_data <- read.csv("https://raw.githubusercontent.com/flyaflya/buad442Fall2025/refs/heads/main/datasets/salesPriceData.csv")
 
-# Prepare model data (treating zipCode as numerical)
+# Prepare model data
 model_data <- sales_data %>%
   select(SalePrice, LotArea, YearBuilt, GrLivArea, FullBath, HalfBath, 
          BedroomAbvGr, TotRmsAbvGrd, GarageCars, zipCode) %>%
+  # Convert zipCode to factor (categorical variable) - important for proper modeling
+  mutate(zipCode = as.factor(zipCode)) %>%
   na.omit()
+
+cat("Data prepared with zipCode as categorical variable\n")
+cat("Number of unique zip codes:", length(unique(model_data$zipCode)), "\n")
 
 # Split data
 set.seed(123)
@@ -96,15 +77,15 @@ train_indices <- sample(1:nrow(model_data), 0.8 * nrow(model_data))
 train_data <- model_data[train_indices, ]
 test_data <- model_data[-train_indices, ]
 
-# Build decision tree
-tree_model <- rpart(SalePrice ~ ., 
-                    data = train_data,
-                    method = "anova",
-                    control = rpart.control(maxdepth = 3, 
-                                          minsplit = 20, 
-                                          minbucket = 10))
-
-cat("Model built with", sum(tree_model$frame$var == "<leaf>"), "terminal nodes\n")
+# Build random forests with different numbers of trees (with corrected categorical zipCode)
+rf_1 <- randomForest(SalePrice ~ ., data = train_data, ntree = 1, mtry = 3, seed = 123)
+rf_5 <- randomForest(SalePrice ~ ., data = train_data, ntree = 5, mtry = 3, seed = 123)
+rf_25 <- randomForest(SalePrice ~ ., data = train_data, ntree = 25, mtry = 3, seed = 123)
+rf_100 <- randomForest(SalePrice ~ ., data = train_data, ntree = 100, mtry = 3, seed = 123)
+rf_500 <- randomForest(SalePrice ~ ., data = train_data, ntree = 500, mtry = 3, seed = 123)
+rf_1000 <- randomForest(SalePrice ~ ., data = train_data, ntree = 1000, mtry = 3, seed = 123)
+rf_2000 <- randomForest(SalePrice ~ ., data = train_data, ntree = 2000, mtry = 3, seed = 123)
+rf_5000 <- randomForest(SalePrice ~ ., data = train_data, ntree = 5000, mtry = 3, seed = 123)
 ```
 
 ### Python
@@ -116,7 +97,7 @@ cat("Model built with", sum(tree_model$frame$var == "<leaf>"), "terminal nodes\n
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.tree import DecisionTreeRegressor, plot_tree
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
 import warnings
@@ -125,378 +106,278 @@ warnings.filterwarnings('ignore')
 # Load data
 sales_data = pd.read_csv("https://raw.githubusercontent.com/flyaflya/buad442Fall2025/refs/heads/main/datasets/salesPriceData.csv")
 
-# Prepare model data (treating zipCode as numerical)
+# Prepare model data
 model_vars = ['SalePrice', 'LotArea', 'YearBuilt', 'GrLivArea', 'FullBath', 
               'HalfBath', 'BedroomAbvGr', 'TotRmsAbvGrd', 'GarageCars', 'zipCode']
 model_data = sales_data[model_vars].dropna()
+
+# Convert zipCode to categorical variable - important for proper modeling
+model_data['zipCode'] = model_data['zipCode'].astype('category')
 
 # Split data
 X = model_data.drop('SalePrice', axis=1)
 y = model_data['SalePrice']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=123)
 
-# Build decision tree
-tree_model = DecisionTreeRegressor(max_depth=3, 
-                                  min_samples_split=20, 
-                                  min_samples_leaf=10, 
-                                  random_state=123)
-tree_model.fit(X_train, y_train)
+# Build random forests with different numbers of trees (with corrected categorical zipCode)
+rf_1 = RandomForestRegressor(n_estimators=1, max_features=3, random_state=123)
+rf_5 = RandomForestRegressor(n_estimators=5, max_features=3, random_state=123)
+rf_25 = RandomForestRegressor(n_estimators=25, max_features=3, random_state=123)
+rf_100 = RandomForestRegressor(n_estimators=100, max_features=3, random_state=123)
+rf_500 = RandomForestRegressor(n_estimators=500, max_features=3, random_state=123)
+rf_1000 = RandomForestRegressor(n_estimators=1000, max_features=3, random_state=123)
+rf_2000 = RandomForestRegressor(n_estimators=2000, max_features=3, random_state=123)
+rf_5000 = RandomForestRegressor(n_estimators=5000, max_features=3, random_state=123)
 
-print(f"Model built with {tree_model.get_n_leaves()} terminal nodes")
+# Fit all models
+rf_1.fit(X_train, y_train)
+rf_5.fit(X_train, y_train)
+rf_25.fit(X_train, y_train)
+rf_100.fit(X_train, y_train)
+rf_500.fit(X_train, y_train)
+rf_1000.fit(X_train, y_train)
+rf_2000.fit(X_train, y_train)
+rf_5000.fit(X_train, y_train)
 ```
 
 :::
 
-## Tree Visualization
+## Results: The Power of Ensemble Learning
+
+Our analysis reveals a clear pattern: **more trees consistently improve performance**. Let's examine the results and understand why this happens.
+
+### Performance Trends
 
 ::: {.panel-tabset}
 
 ### R
 
 ```{r}
-#| label: visualize-tree-r
+#| label: performance-comparison-r
 #| echo: true
 #| message: false
 #| warning: false
 #| fig-width: 10
 #| fig-height: 6
 
-# Visualize tree
-if (require(rpart.plot, quietly = TRUE)) {
-  rpart.plot(tree_model, 
-             type = 2,
-             extra = 101,
-             fallen.leaves = TRUE,
-             digits = 0,
-             cex = 0.8,
-             main = "Decision Tree (zipCode as Numerical)")
-} else {
-  plot(tree_model, uniform = TRUE, main = "Decision Tree (zipCode as Numerical)")
-  text(tree_model, use.n = TRUE, all = TRUE, cex = 0.8)
+# Calculate predictions and performance metrics for test data
+predictions_1_test <- predict(rf_1, test_data)
+predictions_5_test <- predict(rf_5, test_data)
+predictions_25_test <- predict(rf_25, test_data)
+predictions_100_test <- predict(rf_100, test_data)
+predictions_500_test <- predict(rf_500, test_data)
+predictions_1000_test <- predict(rf_1000, test_data)
+predictions_2000_test <- predict(rf_2000, test_data)
+predictions_5000_test <- predict(rf_5000, test_data)
+
+# Calculate predictions for training data
+predictions_1_train <- predict(rf_1, train_data)
+predictions_5_train <- predict(rf_5, train_data)
+predictions_25_train <- predict(rf_25, train_data)
+predictions_100_train <- predict(rf_100, train_data)
+predictions_500_train <- predict(rf_500, train_data)
+predictions_1000_train <- predict(rf_1000, train_data)
+predictions_2000_train <- predict(rf_2000, train_data)
+predictions_5000_train <- predict(rf_5000, train_data)
+
+# Calculate RMSE for test data
+rmse_1_test <- sqrt(mean((test_data$SalePrice - predictions_1_test)^2))
+rmse_5_test <- sqrt(mean((test_data$SalePrice - predictions_5_test)^2))
+rmse_25_test <- sqrt(mean((test_data$SalePrice - predictions_25_test)^2))
+rmse_100_test <- sqrt(mean((test_data$SalePrice - predictions_100_test)^2))
+rmse_500_test <- sqrt(mean((test_data$SalePrice - predictions_500_test)^2))
+rmse_1000_test <- sqrt(mean((test_data$SalePrice - predictions_1000_test)^2))
+rmse_2000_test <- sqrt(mean((test_data$SalePrice - predictions_2000_test)^2))
+rmse_5000_test <- sqrt(mean((test_data$SalePrice - predictions_5000_test)^2))
+
+# Calculate RMSE for training data
+rmse_1_train <- sqrt(mean((train_data$SalePrice - predictions_1_train)^2))
+rmse_5_train <- sqrt(mean((train_data$SalePrice - predictions_5_train)^2))
+rmse_25_train <- sqrt(mean((train_data$SalePrice - predictions_25_train)^2))
+rmse_100_train <- sqrt(mean((train_data$SalePrice - predictions_100_train)^2))
+rmse_500_train <- sqrt(mean((train_data$SalePrice - predictions_500_train)^2))
+rmse_1000_train <- sqrt(mean((train_data$SalePrice - predictions_1000_train)^2))
+rmse_2000_train <- sqrt(mean((train_data$SalePrice - predictions_2000_train)^2))
+rmse_5000_train <- sqrt(mean((train_data$SalePrice - predictions_5000_train)^2))
+
+# Calculate R-squared
+r2_1 <- 1 - sum((test_data$SalePrice - predictions_1_test)^2) / sum((test_data$SalePrice - mean(test_data$SalePrice))^2)
+r2_5 <- 1 - sum((test_data$SalePrice - predictions_5_test)^2) / sum((test_data$SalePrice - mean(test_data$SalePrice))^2)
+r2_25 <- 1 - sum((test_data$SalePrice - predictions_25_test)^2) / sum((test_data$SalePrice - mean(test_data$SalePrice))^2)
+r2_100 <- 1 - sum((test_data$SalePrice - predictions_100_test)^2) / sum((test_data$SalePrice - mean(test_data$SalePrice))^2)
+r2_500 <- 1 - sum((test_data$SalePrice - predictions_500_test)^2) / sum((test_data$SalePrice - mean(test_data$SalePrice))^2)
+r2_1000 <- 1 - sum((test_data$SalePrice - predictions_1000_test)^2) / sum((test_data$SalePrice - mean(test_data$SalePrice))^2)
+r2_2000 <- 1 - sum((test_data$SalePrice - predictions_2000_test)^2) / sum((test_data$SalePrice - mean(test_data$SalePrice))^2)
+r2_5000 <- 1 - sum((test_data$SalePrice - predictions_5000_test)^2) / sum((test_data$SalePrice - mean(test_data$SalePrice))^2)
+
+# Create performance comparison
+performance_df <- data.frame(
+  Trees = c(1, 5, 25, 100, 500, 1000, 2000, 5000),
+  RMSE_Test = c(rmse_1_test, rmse_5_test, rmse_25_test, rmse_100_test, rmse_500_test, rmse_1000_test, rmse_2000_test, rmse_5000_test),
+  RMSE_Train = c(rmse_1_train, rmse_5_train, rmse_25_train, rmse_100_train, rmse_500_train, rmse_1000_train, rmse_2000_train, rmse_5000_train),
+  R_squared = c(r2_1, r2_5, r2_25, r2_100, r2_500, r2_1000, r2_2000, r2_5000)
+)
+
+print(performance_df)
+```
+
+### Python
+
+```{python}
+#| label: performance-comparison-python
+#| echo: true
+#| fig-width: 10
+#| fig-height: 6
+
+# Calculate predictions for test data
+predictions_1_test = rf_1.predict(X_test)
+predictions_5_test = rf_5.predict(X_test)
+predictions_25_test = rf_25.predict(X_test)
+predictions_100_test = rf_100.predict(X_test)
+predictions_500_test = rf_500.predict(X_test)
+predictions_1000_test = rf_1000.predict(X_test)
+predictions_2000_test = rf_2000.predict(X_test)
+predictions_5000_test = rf_5000.predict(X_test)
+
+# Calculate predictions for training data
+predictions_1_train = rf_1.predict(X_train)
+predictions_5_train = rf_5.predict(X_train)
+predictions_25_train = rf_25.predict(X_train)
+predictions_100_train = rf_100.predict(X_train)
+predictions_500_train = rf_500.predict(X_train)
+predictions_1000_train = rf_1000.predict(X_train)
+predictions_2000_train = rf_2000.predict(X_train)
+predictions_5000_train = rf_5000.predict(X_train)
+
+# Calculate performance metrics for test data
+rmse_1_test = np.sqrt(mean_squared_error(y_test, predictions_1_test))
+rmse_5_test = np.sqrt(mean_squared_error(y_test, predictions_5_test))
+rmse_25_test = np.sqrt(mean_squared_error(y_test, predictions_25_test))
+rmse_100_test = np.sqrt(mean_squared_error(y_test, predictions_100_test))
+rmse_500_test = np.sqrt(mean_squared_error(y_test, predictions_500_test))
+rmse_1000_test = np.sqrt(mean_squared_error(y_test, predictions_1000_test))
+rmse_2000_test = np.sqrt(mean_squared_error(y_test, predictions_2000_test))
+rmse_5000_test = np.sqrt(mean_squared_error(y_test, predictions_5000_test))
+
+# Calculate performance metrics for training data
+rmse_1_train = np.sqrt(mean_squared_error(y_train, predictions_1_train))
+rmse_5_train = np.sqrt(mean_squared_error(y_train, predictions_5_train))
+rmse_25_train = np.sqrt(mean_squared_error(y_train, predictions_25_train))
+rmse_100_train = np.sqrt(mean_squared_error(y_train, predictions_100_train))
+rmse_500_train = np.sqrt(mean_squared_error(y_train, predictions_500_train))
+rmse_1000_train = np.sqrt(mean_squared_error(y_train, predictions_1000_train))
+rmse_2000_train = np.sqrt(mean_squared_error(y_train, predictions_2000_train))
+rmse_5000_train = np.sqrt(mean_squared_error(y_train, predictions_5000_train))
+
+r2_1 = r2_score(y_test, predictions_1_test)
+r2_5 = r2_score(y_test, predictions_5_test)
+r2_25 = r2_score(y_test, predictions_25_test)
+r2_100 = r2_score(y_test, predictions_100_test)
+r2_500 = r2_score(y_test, predictions_500_test)
+r2_1000 = r2_score(y_test, predictions_1000_test)
+r2_2000 = r2_score(y_test, predictions_2000_test)
+r2_5000 = r2_score(y_test, predictions_5000_test)
+
+# Create performance comparison
+performance_data = {
+    'Trees': [1, 5, 25, 100, 500, 1000, 2000, 5000],
+    'RMSE_Test': [rmse_1_test, rmse_5_test, rmse_25_test, rmse_100_test, rmse_500_test, rmse_1000_test, rmse_2000_test, rmse_5000_test],
+    'RMSE_Train': [rmse_1_train, rmse_5_train, rmse_25_train, rmse_100_train, rmse_500_train, rmse_1000_train, rmse_2000_train, rmse_5000_train],
+    'R_squared': [r2_1, r2_5, r2_25, r2_100, r2_500, r2_1000, r2_2000, r2_5000]
 }
-```
 
-### Python
-
-```{python}
-#| label: visualize-tree-python
-#| echo: true
-#| fig-width: 10
-#| fig-height: 6
-
-# Visualize tree
-plt.figure(figsize=(10, 6))
-plot_tree(tree_model, 
-          feature_names=X_train.columns,
-          filled=True, 
-          rounded=True,
-          fontsize=10,
-          max_depth=3)
-plt.title("Decision Tree (zipCode as Numerical)")
-plt.tight_layout()
-plt.show()
+performance_df = pd.DataFrame(performance_data)
+print(performance_df)
 ```
 
 :::
 
-## Feature Importance Analysis
+## Student Analysis Section: The Power of More Trees {#student-analysis-section}
 
-::: {.panel-tabset}
+**Your Task:** Create visualizations and analysis to demonstrate the power of ensemble learning. You'll need to create three key components:
 
-### R
+### 1. The Power of More Trees Visualization
 
-```{r}
-#| label: feature-importance-r
-#| echo: false
-#| message: false
-#| warning: false
+**Create a visualization showing:**
+- RMSE vs Number of Trees (both training and test data)
+- R-squared vs Number of Trees
+- Do not `echo` the code that creates the visualization
 
-# Extract and display feature importance
-importance_df <- data.frame(
-  Feature = names(tree_model$variable.importance),
-  Importance = as.numeric(tree_model$variable.importance)
-) %>%
-  arrange(desc(Importance)) %>%
-  mutate(Importance_Percent = round(Importance / sum(Importance) * 100, 2))
+**Add Brief Discussion of the Visualization**
+- Discuss where the most dramatic improvement in performance occurs as you add more trees, how dramatic is it?
+- Discuss diminishing returns as you add more trees
 
-# Check zipCode ranking
-zipcode_rank <- which(importance_df$Feature == "zipCode")
-zipcode_importance <- importance_df$Importance_Percent[zipcode_rank]
-```
+::: {.callout-important}
+## 📊 Visualization Requirements
 
-```{r}
-#| label: importance-plot-r
-#| echo: false
-#| message: false
-#| warning: false
-#| fig-width: 8
-#| fig-height: 5
+Create two plots:
+1. **RMSE Plot:** Show how RMSE decreases with more trees (both training and test)
+2. **R-squared Plot:** Show how R-squared increases with more trees
 
-# Plot feature importance
-library(ggplot2)
-ggplot(importance_df, aes(x = reorder(Feature, Importance), y = Importance)) +
-  geom_col(fill = "steelblue", alpha = 0.7) +
-  coord_flip() +
-  labs(title = "Feature Importance (zipCode as Numerical)",
-       x = "Features", y = "Importance Score") +
-  theme_minimal()
-```
-
-### Python
-
-```{python}
-#| label: feature-importance-python
-#| echo: false
-
-# Extract and display feature importance
-importance_df = pd.DataFrame({
-    'Feature': X_train.columns,
-    'Importance': tree_model.feature_importances_
-}).sort_values('Importance', ascending=False)
-
-importance_df['Importance_Percent'] = (importance_df['Importance'] * 100).round(2)
-
-# Check zipCode ranking
-zipcode_rank = importance_df[importance_df['Feature'] == 'zipCode'].index[0] + 1
-zipcode_importance = importance_df[importance_df['Feature'] == 'zipCode']['Importance_Percent'].iloc[0]
-```
-
-```{python}
-#| label: importance-plot-python
-#| echo: false
-#| fig-width: 8
-#| fig-height: 5
-
-# Plot feature importance
-plt.figure(figsize=(8, 5))
-plt.barh(range(len(importance_df)), importance_df['Importance'], 
-         color='steelblue', alpha=0.7)
-plt.yticks(range(len(importance_df)), importance_df['Feature'])
-plt.xlabel('Importance Score')
-plt.title('Feature Importance (zipCode as Numerical)')
-plt.gca().invert_yaxis()
-plt.tight_layout()
-plt.show()
-```
-
+Use log scale on x-axis to better show the relationship across the range of tree counts.
 :::
 
-## Critical Analysis: The Encoding Problem
+### 2. Overfitting Visualization and Analysis
 
-::: {.callout-warning}
-## ⚠️ The Problem Revealed
+**Your Task:** Compare decision trees vs random forests in terms of overfitting.
 
-**What to note:** Our decision tree treated `zipCode` as a numerical variable.  This leads to zip code being unimportant.  Not surprisingly, because there is no reason to believe allowing splits like "zipCode < 50012.5" should be beneficial for house price prediction. This false coding of a variable creates several problems:
+**Create one visualization with two side-by-side plots showing:**
+- Decision trees: How performance changes with tree complexity (max depth)
+- Random forests: How performance changes with number of trees
 
-1. **Potentially Meaningless Splits:** A zip code of 50013 is not "greater than" 50012 in any meaningful way for house prices
-2. **False Importance:** The algorithm assigns importance to zipCode based on numerical splits rather than categorical distinctions OR the importance of zip code is completely missed as numerical ordering has no inherent relationship to house prices.
-3. **Misleading Interpretations:** We might conclude zipCode is not important when our intuition tells us it should be important (listen to your intuition).
+**Your analysis should explain:**
+- Why individual decision trees overfit as they become more complex
+- Why random forests don't suffer from the same overfitting problem
+- The mechanisms that prevent overfitting in random forests (bootstrap sampling, random feature selection, averaging)
 
-**The Real Issue:** Zip codes are categorical variables representing discrete geographic areas. The numerical values have no inherent order or magnitude relationship to house prices.  These must be modelled as categorical variables.
+::: {.callout-important}
+## 📊 Overfitting Analysis Requirements
+
+Create a side-by-side comparison showing:
+1. **Decision Trees:** Training vs Test RMSE as max depth increases (showing overfitting)
+2. **Random Forests:** Training vs Test RMSE as number of trees increases (no overfitting)
+
+- Use the same y-axis limits for both side-by-side plots so it clearly shows whether random forests outperform decision trees.
+- Do not `echo` the code that creates the visualization
 :::
 
-## Proper Categorical Encoding: The Solution
+### 3. Linear Regression vs Random Forest Comparison
 
-Now let's repeat the analysis with zipCode properly encoded as categorical variables to see the difference.
+**Your Task:** Compare random forests to linear regression baseline.
 
-**R Approach:** Convert zipCode to a factor (categorical variable)  
-**Python Approach:** One-hot encode zipCode (create dummy variables for each zip code)
+**Create a comparison table showing:**
+- Linear Regression RMSE
+- Random Forest (1 tree) RMSE  
+- Random Forest (100 trees) RMSE
+- Random Forest (1000 trees) RMSE
 
-### Categorical Encoding Analysis
+**Your analysis should address:**
+- The improvement in RMSE when going from 1 tree to 100 trees
+- Whether switching from linear regression to 100-tree random forest shows similar improvement
+- When random forests are worth the added complexity vs linear regression
+- The trade-offs between interpretability and performance
 
-::: {.panel-tabset}
+::: {.callout-important}
+## 📊 Comparison Requirements
 
-### R
+Create a clear table comparing:
+- Linear Regression
+- Random Forest (1 tree)
+- Random Forest (100 trees) 
+- Random Forest (1000 trees)
 
-```{r}
-#| label: categorical-r
-#| echo: true
-#| message: false
-#| warning: false
-
-
-# Convert zipCode to factor (categorical)
-model_data_cat <- model_data %>%
-  mutate(zipCode = as.factor(zipCode))
-
-# Split data
-set.seed(123)
-train_indices_cat <- sample(1:nrow(model_data_cat), 0.8 * nrow(model_data_cat))
-train_data_cat <- model_data_cat[train_indices_cat, ]
-test_data_cat <- model_data_cat[-train_indices_cat, ]
-
-# Build decision tree with categorical zipCode
-tree_model_cat <- rpart(SalePrice ~ ., 
-                        data = train_data_cat,
-                        method = "anova",
-                        control = rpart.control(maxdepth = 3, 
-                                              minsplit = 20, 
-                                              minbucket = 10))
-
-# Feature importance with categorical zipCode
-importance_cat <- data.frame(
-  Feature = names(tree_model_cat$variable.importance),
-  Importance = as.numeric(tree_model_cat$variable.importance)
-) %>%
-  arrange(desc(Importance)) %>%
-  mutate(Importance_Percent = round(Importance / sum(Importance) * 100, 2))
-
-# Check if zipCode appears in tree
-zipcode_in_tree <- "zipCode" %in% names(tree_model_cat$variable.importance)
-if(zipcode_in_tree) {
-  zipcode_rank_cat <- which(importance_cat$Feature == "zipCode")
-}
-```
-
-### Python
-
-```{python}
-#| label: categorical-python
-#| echo: true
-#| include: false
-# One-hot encode zipCode
-import pandas as pd
-
-# Create one-hot encoded zipCode
-zipcode_encoded = pd.get_dummies(model_data['zipCode'], prefix='zipCode')
-model_data_cat = pd.concat([model_data.drop('zipCode', axis=1), zipcode_encoded], axis=1)
-
-# Split data
-X_cat = model_data_cat.drop('SalePrice', axis=1)
-y_cat = model_data_cat['SalePrice']
-X_train_cat, X_test_cat, y_train_cat, y_test_cat = train_test_split(X_cat, y_cat, test_size=0.2, random_state=123)
-
-# Build decision tree with one-hot encoded zipCode
-tree_model_cat = DecisionTreeRegressor(max_depth=3, 
-                                      min_samples_split=20, 
-                                      min_samples_leaf=10, 
-                                      random_state=123)
-tree_model_cat.fit(X_train_cat, y_train_cat)
-
-# Feature importance with one-hot encoded zipCode
-importance_cat_df = pd.DataFrame({
-    'Feature': X_train_cat.columns,
-    'Importance': tree_model_cat.feature_importances_
-}).sort_values('Importance', ascending=False)
-
-importance_cat_df['Importance_Percent'] = (importance_cat_df['Importance'] * 100).round(2)
-
-# Check zipCode features
-zipcode_features = [col for col in X_train_cat.columns if col.startswith('zipCode')]
-zipcode_importance = importance_cat_df[importance_cat_df['Feature'].isin(zipcode_features)]['Importance'].sum()
-total_importance = importance_cat_df['Importance'].sum()
-zipcode_percent = (zipcode_importance / total_importance * 100).round(2)
-```
-
-:::
-
-### Tree Visualization: Categorical zipCode
-
-::: {.panel-tabset}
-
-### R
-
-```{r}
-#| label: visualize-tree-cat-r
-#| echo: true
-#| message: false
-#| warning: false
-#| fig-width: 10
-#| fig-height: 6
-
-# Visualize tree with categorical zipCode
-if (require(rpart.plot, quietly = TRUE)) {
-  rpart.plot(tree_model_cat, 
-             type = 2,
-             extra = 101,
-             fallen.leaves = TRUE,
-             digits = 0,
-             cex = 0.8,
-             main = "Decision Tree (zipCode as Categorical)")
-} else {
-  plot(tree_model_cat, uniform = TRUE, main = "Decision Tree (zipCode as Categorical)")
-  text(tree_model_cat, use.n = TRUE, all = TRUE, cex = 0.8)
-}
-```
-
-### Python
-
-```{python}
-#| label: visualize-tree-cat-python
-#| echo: true
-#| fig-width: 10
-#| fig-height: 6
-
-# Visualize tree with one-hot encoded zipCode
-plt.figure(figsize=(10, 6))
-plot_tree(tree_model_cat, 
-          feature_names=X_train_cat.columns,
-          filled=True, 
-          rounded=True,
-          fontsize=8,
-          max_depth=4)
-plt.title("Decision Tree (zipCode One-Hot Encoded)")
-plt.tight_layout()
-plt.show()
-```
-
-:::
-
-### Feature Importance: Categorical zipCode
-
-::: {.panel-tabset}
-
-### R
-
-```{r}
-#| label: importance-plot-cat-r
-#| echo: false
-#| message: false
-#| warning: false
-#| fig-width: 8
-#| fig-height: 5
-
-# Plot feature importance for categorical zipCode
-library(ggplot2)
-ggplot(importance_cat, aes(x = reorder(Feature, Importance), y = Importance)) +
-  geom_col(fill = "darkgreen", alpha = 0.7) +
-  coord_flip() +
-  labs(title = "Feature Importance (zipCode as Categorical)",
-       x = "Features", y = "Importance Score") +
-  theme_minimal()
-```
-
-### Python
-
-```{python}
-#| label: importance-plot-cat-python
-#| echo: false
-#| fig-width: 8
-#| fig-height: 5
-
-# Plot feature importance for categorical zipCode
-plt.figure(figsize=(8, 5))
-plt.barh(range(len(importance_cat_df)), importance_cat_df['Importance'], 
-         color='darkgreen', alpha=0.7)
-plt.yticks(range(len(importance_cat_df)), importance_cat_df['Feature'])
-plt.xlabel('Importance Score')
-plt.title('Feature Importance (zipCode One-Hot Encoded)')
-plt.gca().invert_yaxis()
-plt.tight_layout()
-plt.show()
-```
-
+Include percentage improvements over linear regression for each random forest model.
 :::
 
 ## Challenge Requirements 📋
 
 ### Minimum Requirements for Any Points on Challenge
 
-1. **Create a GitHub Pages Site:** Use the starter repository (see Repository Setup section below) to begin with a working template. The repository includes all the analysis code and visualizations above.
+1. **Create a GitHub Pages Site:** Use the starter repository (see Repository Setup section below) to begin with a working template. The repository includes all the analysis code and visualizations above.  Use just one language for the analysis and visualizations, delete the other language and omit the panel tabsets.
 
-2. **Add Discussion Narrative:** Add your answers to the two discussion questions below in the Discussion Questions section of the rendered HTML.
+2. **Add Analysis and Visualizations:** Complete the three analysis sections above with your own code and insights.
 
-3. **GitHub Repository:** Use your forked repository (from the starter repository) named "decTreeChallenge" in your GitHub account.
+3. **GitHub Repository:** Use your forked repository (from the starter repository) named "randomForestChallenge" in your GitHub account.
 
 4. **GitHub Pages Setup:** The repository should be made the source of your github pages:
 
@@ -505,7 +386,7 @@ plt.show()
    - Under "Source", select "Deploy from a branch"
    - Choose "main" branch and "/ (root)" folder
    - Click "Save"
-   - Your site will be available at: `https://[your-username].github.io/decTreeChallenge/`
+   - Your site will be available at: `https://[your-username].github.io/randomForestChallenge/`
    - **Note:** It may take a few minutes for the site to become available after enabling Pages
 
 ## Getting Started: Repository Setup 🚀
@@ -513,7 +394,7 @@ plt.show()
 ::: {.callout-important}
 ## 📁 Quick Start with Starter Repository
 
-**Step 1:** Fork the starter repository to your github account at [https://github.com/flyaflya/decTreeChallenge.git](https://github.com/flyaflya/decTreeChallenge.git)
+**Step 1:** Fork the starter repository to your github account at [https://github.com/flyaflya/randomForestChallenge.git](https://github.com/flyaflya/randomForestChallenge.git)
 
 **Step 2:** Clone your fork locally using Cursor (or VS Code)
 
@@ -528,7 +409,7 @@ plt.show()
 - **Pre-loaded data:** All required data and analysis code is included
 - **Working template:** Basic Quarto structure (`index.qmd`) is ready
 - **No setup errors:** Avoid common data loading issues
-- **Focus on analysis:** Spend time on the discussion questions, not data preparation
+- **Focus on analysis:** Spend time on the visualizations and analysis, not data preparation
 :::
 
 ### Getting Started Tips
@@ -538,7 +419,7 @@ plt.show()
 
 > "Slow is Smooth and Smooth is Fast"
 
-*Take your time to understand the decision tree mechanics, plan your approach carefully, and execute with precision. Rushing through this challenge will only lead to errors and confusion.*
+*Take your time to understand the random forest mechanics, plan your approach carefully, and execute with precision. Rushing through this challenge will only lead to errors and confusion.*
 :::
 
 ::: {.callout-warning}
@@ -548,7 +429,8 @@ plt.show()
 
 **Commit after each major step:**
 
-- After adding your discussion answers
+- After adding your visualizations
+- After adding your analysis
 - After rendering to HTML
 - Before asking the AI for help with new code
 
@@ -562,93 +444,80 @@ plt.show()
 *Remember: Frequent commits are your safety net!*
 :::
 
-## Discussion Questions for Challenge
-
-**Your Task:** Add thoughtful narrative answers to these two questions in the Discussion Questions section of your rendered HTML site.
-
-1. **Numerical vs Categorical Encoding:** There are four models above, two in R and two in Python. For each language, the models differ by how zip code is modelled, either as a numerical variable or as a categorical variable. Given what you know about zip codes and real estate prices, how should zip code be modelled, numerically or categorically?
-
-2. **R vs Python Implementation Differences:** When modelling zip code as a categorical variable, the output tree and feature importance differs quite significantly between R and Python. Investigate why this is the case. Which language would you say does a better job of modelling zip code as a categorical variable? Why is this the case? Do you see any documentation suggesting the other language does a better job? If so, please provide a quote from the documentation.
-
-::: {.callout-important}
-## 📋 Important Note on AI Usage
-
-**No coding assistance expected:** This challenge is designed for independent analysis and critical thinking. You are **not** expected to use AI for coding help or to write code for you. You are **not** expected to code at all unless curious about any ideas you may have. 
-
-**AI as unreliable thought partner:** If you choose to use AI tools, treat them as an unreliable thought partner. AI responses should be verified and cross-checked rather than accepted at face value.
-
-**Documentation verification required:** For question 2, you must investigate the official documentation for both `rpart` (R) and `sklearn.tree.DecisionTreeRegressor` (Python) to understand why the two implementations yield vastly different results when handling categorical variables. Your analysis should be grounded in the actual documentation and technical specifications of these libraries, not AI-generated explanations. AI can be helpful in digesting the documentation, but you must verify the information is correct.
-:::
-
 ## Grading Rubric 🎓
 
 ::: {.callout-important}
 ## 📊 What You're Really Being Graded On
 
-**This is an investigative report, not a coding exercise.** You're analyzing decision tree models and reporting your findings like a professional analyst would. Think of this as a brief you'd write for a client or manager about why proper variable encoding matters in machine learning.
+**This is an investigative report, not a coding exercise.** You're analyzing random forest models and reporting your findings like a professional analyst would. Think of this as a brief you'd write for a client or manager about the power of ensemble learning and when to use random forests vs simpler approaches.
 
 **What makes a great report:**
 
-- **Clear narrative:** Tell the story of what you discovered about decision tree feature importance
-- **Insightful analysis:** Focus on the most interesting differences between numerical and categorical encoding
+- **Clear narrative:** Tell the story of what you discovered about ensemble learning
+- **Insightful analysis:** Focus on the most interesting findings about random forest performance
 - **Professional presentation:** Clean, readable, and engaging
 - **Concise conclusions:** No AI babble or unnecessary technical jargon
-- **Human insights:** Your interpretation of what the feature importance rankings actually mean (or don't mean)
-- **Documentation-based analysis:** For question 2, ground your analysis in actual library documentation
+- **Human insights:** Your interpretation of what the performance improvements actually mean
+- **Practical implications:** When random forests are worth the added complexity
 
-**What we're looking for:** A compelling 1-2 minute read that demonstrates both the power of decision trees for interpretability and the critical importance of proper variable encoding.
+**What we're looking for:** A compelling 2-3 minute read that demonstrates both the power of ensemble learning and the importance of choosing the right tool for the job.
 :::
 
 ### Questions to Answer for 75% Grade on Challenge
 
-1. **Numerical vs Categorical Analysis:** Provide a clear, well-reasoned answer to question 1 about how zip codes should be modelled. Your answer should demonstrate understanding of why categorical variables need special treatment in decision trees.
+1. **Power of More Trees Analysis:** Provide a clear, well-reasoned analysis of how random forest performance improves with more trees. Your analysis should demonstrate understanding of ensemble learning principles and diminishing returns.
 
 ### Questions to Answer for 85% Grade on Challenge
 
-2. **R vs Python Implementation Analysis:** Provide a thorough analysis of question 2, including investigation of the official documentation for both `rpart` (R) and `sklearn.tree.DecisionTreeRegressor` (Python). Your analysis should explain the technical differences and provide a reasoned opinion about which implementation handles categorical variables better.
+2. **Overfitting Analysis:** Provide a thorough analysis comparing decision trees vs random forests in terms of overfitting. Your analysis should explain why individual trees overfit while random forests don't, and the mechanisms that prevent overfitting in ensemble methods.
 
 ### Questions to Answer for 95% Grade on Challenge
 
-3. **Professional Presentation:** Your discussion answers should be written in a professional, engaging style that would be appropriate for a business audience. Avoid technical jargon and focus on practical implications.  Use Quarto markdown linking to create a link to the discussion section from the top of the page (see https://quarto.org/docs/authoring/cross-references.html#sections).
+3. **Linear Regression Comparison:** Your analysis should include a clear comparison table and discussion of when random forests are worth the added complexity vs linear regression. Focus on practical implications for real-world applications.
 
 ### Questions to Answer for 100% Grade on Challenge
 
-4. **Documentation Integration:** For question 2, include a specific quote from the official documentation of `sklearn.tree.DecisionTreeRegressor` that supports your analysis. 
+4. **Professional Presentation:** Your analysis should be written in a professional, engaging style that would be appropriate for a business audience. Use clear visualizations and focus on practical insights rather than technical jargon.
 
 ## Submission Checklist ✅
 
 **Minimum Requirements (Required for Any Points):**
 
-- [ ] Forked starter repository from [https://github.com/flyaflya/decTreeChallenge.git](https://github.com/flyaflya/decTreeChallenge.git)
+- [ ] Forked starter repository from [https://github.com/flyaflya/randomForestChallenge.git](https://github.com/flyaflya/randomForestChallenge.git)
 - [ ] Cloned repository locally using Cursor (or VS Code)
-- [ ] Added thoughtful narrative answers to both discussion questions
+- [ ] Completed all three analysis sections with visualizations
 - [ ] Document rendered to HTML successfully
 - [ ] HTML files uploaded to your forked repository
 - [ ] GitHub Pages enabled and working
-- [ ] Site accessible at `https://[your-username].github.io/decTreeChallenge/`
+- [ ] Site accessible at `https://[your-username].github.io/randomForestChallenge/`
 
 **75% Grade Requirements:**
 
-- [ ] Clear, well-reasoned answer to question 1 about numerical vs categorical encoding
+- [ ] Clear analysis of how random forest performance improves with more trees
+- [ ] Discussion of diminishing returns in ensemble learning
 
 **85% Grade Requirements:**
 
-- [ ] Thorough analysis of question 2 with investigation of official documentation
+- [ ] Thorough overfitting analysis comparing decision trees vs random forests
+- [ ] Explanation of mechanisms that prevent overfitting in random forests
 
 **95% Grade Requirements:**
 
-- [ ] Professional presentation style appropriate for business audience with links to the discussion section from the top of the page (see https://quarto.org/docs/authoring/cross-references.html#sections).
+- [ ] Complete linear regression comparison with clear table
+- [ ] Discussion of when random forests are worth the complexity
 
 **100% Grade Requirements:**
 
-- [ ] Specific quote from official documentation of `sklearn.tree.DecisionTreeRegressor` supporting your analysis
+- [ ] Professional presentation style appropriate for business audience
+- [ ] Clear, engaging narrative that tells a compelling story
+- [ ] Practical insights that would help a real data scientist
 
 **Report Quality (Critical for Higher Grades):**
 
 - [ ] Clear, engaging narrative that tells a story
-- [ ] Focus on the most interesting findings about decision tree feature importance
+- [ ] Focus on the most interesting findings about ensemble learning
 - [ ] Professional writing style (no AI-generated fluff)
 - [ ] Concise analysis that gets to the point
 - [ ] Practical insights that would help a real data scientist
-- [ ] Documentation-based analysis for technical questions
+- [ ] Well-designed visualizations that support your analysis
 
