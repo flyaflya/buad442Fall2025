@@ -23,7 +23,7 @@ execute:
 
 We analyze the Ames Housing dataset, which contains detailed information about residential properties sold in Ames, Iowa from 2006 to 2010. This dataset is ideal for our analysis because:
 
-- **Anticiapted Non-linear Relationships:** Real estate prices have complex, non-linear relationships between features (e.g., square footage in wealthy vs. poor zip codes affects price differently)
+- **Anticipated Non-linear Relationships:** Real estate prices have complex, non-linear relationships between features (e.g., square footage in wealthy vs. poor zip codes affects price differently)
 - **Mixed Data Types:** Contains both categorical (zipCode) and numerical variables
 - **Real-world Complexity:** Captures the kind of messy, real-world data where ensemble methods excel
 
@@ -44,8 +44,6 @@ suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(randomForest))
 
 # Load data
-R.home()
-.libPaths()
 sales_data <- read.csv("https://raw.githubusercontent.com/flyaflya/buad442Fall2025/refs/heads/main/datasets/salesPriceData.csv")
 
 # Prepare model data
@@ -66,14 +64,14 @@ train_data <- model_data[train_indices, ]
 test_data <- model_data[-train_indices, ]
 
 # Build random forests with different numbers of trees (with corrected categorical zipCode)
-rf_1 <- randomForest(SalePrice ~ ., data = train_data, ntree = 1, mtry = 3, random_state = 123)
-rf_5 <- randomForest(SalePrice ~ ., data = train_data, ntree = 5, mtry = 3, random_state = 123)
-rf_25 <- randomForest(SalePrice ~ ., data = train_data, ntree = 25, mtry = 3, random_state = 123)
-rf_100 <- randomForest(SalePrice ~ ., data = train_data, ntree = 100, mtry = 3, random_state = 123)
-rf_500 <- randomForest(SalePrice ~ ., data = train_data, ntree = 500, mtry = 3, random_state = 123)
-rf_1000 <- randomForest(SalePrice ~ ., data = train_data, ntree = 1000, mtry = 3, random_state = 123)
-rf_2000 <- randomForest(SalePrice ~ ., data = train_data, ntree = 2000, mtry = 3, random_state = 123)
-rf_5000 <- randomForest(SalePrice ~ ., data = train_data, ntree = 5000, mtry = 3, random_state = 123)
+rf_1 <- randomForest(SalePrice ~ ., data = train_data, ntree = 1, mtry = 3, seed = 123)
+rf_5 <- randomForest(SalePrice ~ ., data = train_data, ntree = 5, mtry = 3, seed = 123)
+rf_25 <- randomForest(SalePrice ~ ., data = train_data, ntree = 25, mtry = 3, seed = 123)
+rf_100 <- randomForest(SalePrice ~ ., data = train_data, ntree = 100, mtry = 3, seed = 123)
+rf_500 <- randomForest(SalePrice ~ ., data = train_data, ntree = 500, mtry = 3, seed = 123)
+rf_1000 <- randomForest(SalePrice ~ ., data = train_data, ntree = 1000, mtry = 3, seed = 123)
+rf_2000 <- randomForest(SalePrice ~ ., data = train_data, ntree = 2000, mtry = 3, seed = 123)
+rf_5000 <- randomForest(SalePrice ~ ., data = train_data, ntree = 5000, mtry = 3, seed = 123)
 ```
 
 ### Python
@@ -301,7 +299,7 @@ library(ggplot2)
 p1 <- ggplot(performance_df, aes(x = Trees, y = RMSE_Test)) +
   geom_line(color = "red", size = 1.2) +
   geom_point(color = "red", size = 3) +
-  labs(title = "RMSE Decreases with More Trees (Corrected Analysis)",
+  labs(title = "RMSE Decreases with More Trees",
        x = "Number of Trees", y = "RMSE") +
   theme_minimal() +
   scale_x_log10()
@@ -310,7 +308,7 @@ p1 <- ggplot(performance_df, aes(x = Trees, y = RMSE_Test)) +
 p2 <- ggplot(performance_df, aes(x = Trees, y = R_squared)) +
   geom_line(color = "blue", size = 1.2) +
   geom_point(color = "blue", size = 3) +
-  labs(title = "R-squared Increases with More Trees (Corrected Analysis)",
+  labs(title = "R-squared Increases with More Trees",
        x = "Number of Trees", y = "R-squared") +
   theme_minimal() +
   scale_x_log10()
@@ -335,7 +333,7 @@ fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
 ax1.plot(performance_df['Trees'], performance_df['RMSE_Test'], 'ro-', linewidth=2, markersize=8)
 ax1.set_xlabel('Number of Trees')
 ax1.set_ylabel('RMSE')
-ax1.set_title('RMSE Decreases with More Trees (Corrected Analysis)')
+ax1.set_title('RMSE Decreases with More Trees')
 ax1.set_xscale('log')
 ax1.grid(True, alpha=0.3)
 
@@ -343,7 +341,7 @@ ax1.grid(True, alpha=0.3)
 ax2.plot(performance_df['Trees'], performance_df['R_squared'], 'bo-', linewidth=2, markersize=8)
 ax2.set_xlabel('Number of Trees')
 ax2.set_ylabel('R-squared')
-ax2.set_title('R-squared Increases with More Trees (Corrected Analysis)')
+ax2.set_title('R-squared Increases with More Trees')
 ax2.set_xscale('log')
 ax2.grid(True, alpha=0.3)
 
@@ -353,7 +351,7 @@ plt.show()
 
 :::
 
-The results show a clear trend: as we increase the number of trees from 1 to 5,000, both RMSE decreases and R-squared increases. This demonstrates the fundamental principle of ensemble learning analagous to the 'wisdom of crowds' phenomenon.
+The results show a clear trend: as we increase the number of trees from 1 to 5,000, both RMSE decreases and R-squared increases. This demonstrates the fundamental principle of ensemble learning analogous to the 'wisdom of crowds' phenomenon.
 
 ### Important Notes on Random Forest Performance
 
@@ -557,7 +555,7 @@ p1 <- ggplot(tree_comparison, aes(x = Max_Depth)) +
   geom_point(aes(y = RMSE_Test, color = "Test Data"), size = 3) +
   geom_line(aes(y = RMSE_Train, color = "Training Data"), size = 1.2) +
   geom_point(aes(y = RMSE_Train, color = "Training Data"), size = 3) +
-  labs(title = "Decision Trees: Overfitting Problem (Corrected Analysis)",
+  labs(title = "Decision Trees: Overfitting Problem",
        subtitle = "Training performance improves, test performance gets worse",
        x = "Max Depth", y = "RMSE", color = "Data Type") +
   theme_minimal() +
@@ -570,7 +568,7 @@ p2 <- ggplot(performance_df, aes(x = Trees)) +
   geom_point(aes(y = RMSE_Test, color = "Test Data"), size = 3) +
   geom_line(aes(y = RMSE_Train, color = "Training Data"), size = 1.2) +
   geom_point(aes(y = RMSE_Train, color = "Training Data"), size = 3) +
-  labs(title = "Random Forests: No Overfitting (Corrected Analysis)",
+  labs(title = "Random Forests: No Overfitting",
        subtitle = "Both training and test performance improve with more trees",
        x = "Number of Trees", y = "RMSE", color = "Data Type") +
   theme_minimal() +
@@ -603,7 +601,7 @@ ax1.plot(tree_comparison_df['Max_Depth'], tree_comparison_df['RMSE_Test'], 'ro-'
 ax1.plot(tree_comparison_df['Max_Depth'], tree_comparison_df['RMSE_Train'], 'darkred', linestyle='--', linewidth=2, markersize=8, label='Training Data')
 ax1.set_xlabel('Max Depth')
 ax1.set_ylabel('RMSE')
-ax1.set_title('Decision Trees: Overfitting Problem (Corrected Analysis)\nTraining improves, test gets worse')
+ax1.set_title('Decision Trees: Overfitting Problem\nTraining improves, test gets worse')
 ax1.set_ylim(y_min, y_max)
 ax1.legend()
 ax1.grid(True, alpha=0.3)
@@ -613,7 +611,7 @@ ax2.plot(performance_df['Trees'], performance_df['RMSE_Test'], 'bo-', linewidth=
 ax2.plot(performance_df['Trees'], performance_df['RMSE_Train'], 'darkblue', linestyle='--', linewidth=2, markersize=8, label='Training Data')
 ax2.set_xlabel('Number of Trees')
 ax2.set_ylabel('RMSE')
-ax2.set_title('Random Forests: No Overfitting (Corrected Analysis)\nBoth training and test improve with more trees')
+ax2.set_title('Random Forests: No Overfitting\nBoth training and test improve with more trees')
 ax2.set_xscale('log')
 ax2.set_ylim(y_min, y_max)
 ax2.legend()
@@ -634,45 +632,6 @@ plt.show()
 4. **No Single Tree Dominates:** No one tree can overfit the entire dataset
 
 **The Magic:** Random forests tend to not overfit and provide a robust prediction.
-
-## Simple Demonstration: Why More Trees Help
-
-Let's look at a simple example to understand why ensemble methods work so well.
-
-### The Wisdom of Crowds
-
-::: {.callout-tip}
-## 🧠 Think About It
-
-Imagine you're trying to predict the price of a house. You ask 5 real estate agents, and each gives you a different estimate:
-
-- Agent 1: $250,000
-- Agent 2: $280,000  
-- Agent 3: $270,000
-- Agent 4: $260,000
-- Agent 5: $290,000
-
-**Average prediction: $270,000**
-
-Now imagine you ask 100 agents instead. Even if some agents are way off, the average of 100 predictions will be much more accurate than any single prediction.
-
-**This is exactly how random forests work!**
-:::
-
-### Key Takeaway
-
-**More trees = Better predictions** (up to a point)
-
-- 1 tree: Single decision tree (baseline)
-- 5 trees: Basic ensemble, some improvement
-- 25 trees: Good ensemble, noticeable improvement  
-- 100 trees: Strong ensemble, significant improvement
-- 500 trees: Very strong ensemble, diminishing returns
-- 1,000 trees: Excellent ensemble, minimal additional improvement
-- 2,000 trees: Very strong ensemble, tiny additional improvement
-- 5,000 trees: Maximum ensemble, virtually no additional improvement
-
-The beauty of random forests is that **you can't overfit by adding more trees** - they only make your model better! Notice how the improvement becomes smaller as we add more trees, but performance never gets worse.
 
 ## Baseline Comparison: Random Forest vs Linear Regression
 
@@ -873,7 +832,7 @@ plt.show()
 
 :::
 
-## Key Insights: Why Random Forests Outperform Linear Regression and why it didn't happen here
+## Key Insights: When Random Forests Excel and When They Don't
 
 **Random Forest Advantages:**
 1. **Non-linear Relationships:** Captures complex interactions between features that linear regression misses
@@ -881,8 +840,27 @@ plt.show()
 3. **Robustness:** Less sensitive to outliers and non-normal distributions
 4. **Ensemble Effect:** Multiple trees reduce prediction variance
 
-## Apparently, Random Forests Didn't SIGNIFICANTLY (say 10% RMSE improvement) Outperform Linear Regression Here
+## Conclusion: The Right Tool for the Right Job
 
-Going with random forests in this dataset didn't significantly outperform linear regression.  This is likely because the dataset is not very complex, was collected from a homogeneous town in Iowa (Ames, Iowa), and thus the advantage of being able to capture non-linear relationships between the features and the target variable is not as great.
+Our analysis reveals an important lesson: **random forests didn't significantly outperform linear regression on this dataset**. This outcome, while initially surprising, provides valuable insights:
+
+**Why Random Forests Underperformed Here:**
+- **Homogeneous Dataset:** The Ames housing data comes from a single, relatively uniform market (Ames, Iowa)
+- **Limited Complexity:** The relationships between features and house prices may be more linear than anticipated
+- **Simple Baseline:** Linear regression provides a strong baseline for this particular dataset
+
+**When to Use Random Forests:**
+- Complex, non-linear relationships between features
+- High-dimensional datasets with many interactions
+- Noisy data where ensemble methods can reduce variance
+- When interpretability is less important than performance
+
+**When Linear Regression Might Suffice:**
+- Relatively simple, linear relationships
+- Homogeneous datasets from similar contexts
+- When interpretability is crucial
+- When computational efficiency matters
+
+This analysis demonstrates that **the best model depends on the data**. While random forests are powerful tools, they're not always necessary. The key is understanding your data and choosing the appropriate tool for the job.
 
 
