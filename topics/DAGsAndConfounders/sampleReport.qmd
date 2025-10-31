@@ -1,0 +1,121 @@
+---
+title: "Confounder & Randomization Challenge"
+subtitle: "Using Randomization to Overcome A Common Cause Confounder"
+format:
+  html: default
+bibliography: references.bib
+execute:
+  echo: true
+  eval: true
+---
+
+# Confounder & Randomization Challenge
+
+## Motivating Story
+
+::: {.callout-tip title="A Tale of Two Surgeons" icon=false}
+*Paraphrased from* [@taleb2017surgeons]
+
+Imagine you need to choose between two surgeons of similar rank at the same hospital. The first surgeon matches our stereotype perfectly: refined appearance, silver-rimmed glasses, delicate hands, measured speech, and an office adorned with Ivy League diplomas. The second surgeon, by contrast, looks more like a butcher—overweight, large hands, unkempt appearance, and no visible credentials on the wall.
+
+Counterintuitively, the surgeon who doesn't "look the part" may actually be the better choice. Why? Because when someone succeeds in their profession despite not fitting the expected appearance, it suggests they had to overcome significant perceptual biases. This success is likely due to what Nassim Taleb calls "skin in the game"—direct contact with reality that filters out incompetence, since reality is blind to appearances [@taleb2017surgeons].
+:::
+
+## Simulated Data
+
+We'll simulate data to explore the relationship between surgeon appearance and patient outcomes.
+
+```{python}
+#| label: simulate-data
+#| echo: true
+#| message: false
+#| warning: false
+
+import pandas as pd
+import numpy as np
+
+# Set seed for reproducibility
+np.random.seed(123)
+
+# Create dataframe with 100 patients and severity scores
+n_patients = 100
+patients_df = (
+    pd.DataFrame({
+        'patient': range(1, n_patients + 1),
+        'severity': np.random.normal(0, 1, n_patients)
+    })
+    .assign(
+        # Assign doctors based on severity:
+        # Negative severity: 65% chance of Doc Dreamy (id=1), otherwise Doc Duck (id=0)
+        # Positive severity: 65% chance of Doc Duck (id=0), otherwise Doc Dreamy (id=1)
+        doctor_id=lambda df: np.where(
+            df['severity'] < 0,
+            np.where(np.random.random(n_patients) < 0.65, 1, 0),
+            np.where(np.random.random(n_patients) < 0.65, 0, 1)
+        ),
+        # Assign doctor names based on id
+        doctor_name=lambda df: np.where(df['doctor_id'] == 1, 'Doc Dreamy', 'Doc Duck'),
+        # Assign surgical goodness:
+        # Doc Duck: Normal(0.25, 1), Doc Dreamy: Normal(-0.25, 1)
+        surgicalGoodness=lambda df: np.where(
+            df['doctor_name'] == 'Doc Duck',
+            np.random.normal(0.25, 1, n_patients),
+            np.random.normal(-0.25, 1, n_patients)
+        )
+    )
+)
+
+# Display first few rows
+patients_df.head()
+```
+
+```{python}
+#| label: plot-outcomes
+#| fig-width: 8
+#| fig-height: 6
+#| echo: true
+#| message: false
+#| warning: false
+
+import matplotlib.pyplot as plt
+
+# Colorblind-friendly colors
+# Using a blue-turquoise and coral-orange that work well for colorblind viewers
+color_dreamy = '#4E79A7'  # Blue
+color_duck = '#E15759'    # Coral/red-orange (colorblind-friendly alternative to plum)
+
+# Create figure and axes using object-oriented style
+fig, ax = plt.subplots(figsize=(8, 6))
+
+# Separate data by doctor
+dreamy_data = patients_df[patients_df['doctor_name'] == 'Doc Dreamy']
+duck_data = patients_df[patients_df['doctor_name'] == 'Doc Duck']
+
+# Create scatter plots
+ax.scatter(dreamy_data['patient'], dreamy_data['surgicalGoodness'], 
+           color=color_dreamy, label='Doc Dreamy', alpha=0.7, s=60)
+ax.scatter(duck_data['patient'], duck_data['surgicalGoodness'], 
+           color=color_duck, label='Doc Duck', alpha=0.7, s=60)
+
+# Customize the plot with larger fonts for readability
+ax.set_xlabel('Patient Number', fontsize=14, fontweight='bold')
+ax.set_ylabel('Surgical Quality', fontsize=14, fontweight='bold')
+ax.set_title('Surgical Quality by Patient and Doctor', fontsize=16, fontweight='bold', pad=15)
+
+# Add grid for better readability
+ax.grid(True, alpha=0.3, linestyle='--')
+
+# Customize legend with larger font
+ax.legend(fontsize=12, framealpha=0.9, loc='best')
+
+# Increase tick label sizes
+ax.tick_params(labelsize=12)
+
+# Tight layout for better spacing
+plt.tight_layout()
+plt.show()
+```
+
+## Randomization to the Rescue
+
+This is precisely the kind of problem randomization can solve. By randomly assigning patients to surgeons, we break the potential confounding relationship between appearance and patient outcomes, allowing us to assess whether appearance truly matters for surgical success, or if it's merely correlated through other pathways.
