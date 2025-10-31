@@ -18,7 +18,7 @@ execute:
 
 Imagine you need to choose between two surgeons of similar rank at the same hospital. The first surgeon matches our stereotype perfectly: refined appearance, silver-rimmed glasses, delicate hands, measured speech, and an office adorned with Ivy League diplomas. The second surgeon, by contrast, looks more like a butcher—overweight, large hands, unkempt appearance, and no visible credentials on the wall.
 
-Counterintuitively, the surgeon who doesn't "look the part" may actually be the better choice. Why? Because when someone succeeds in their profession despite not fitting the expected appearance, it suggests they had to overcome significant perceptual biases. This success is likely due to what Nassim Taleb calls "skin in the game"—direct contact with reality that filters out incompetence, since reality is blind to appearances [@taleb2017surgeons].
+Counterintuitively, the surgeon who doesn't "look the part" may actually be the better choice. Why? Because when someone succeeds in their profession despite not fitting the expected appearance, it suggests they had to overcome significant perceptual biases. And if we are lucky enough to have people who do not look the part, it is thanks to the presence of some skin in the game, the contact with reality that filters out incompetence. [@taleb2017surgeons]
 :::
 
 ## Data on Two Surgeons
@@ -162,10 +162,10 @@ ax.axhline(y=mean_dreamy, color=color_dreamy, linestyle='--', linewidth=2, alpha
 ax.axhline(y=mean_duck, color=color_duck, linestyle='--', linewidth=2, alpha=0.8)
 
 # Add text annotations for means with shape symbols
-ax.text(n_patients + 2, mean_dreamy, f'Mean: {mean_dreamy:.2f} (○)', 
+ax.text(n_patients + 8, mean_dreamy, f'Mean: {mean_dreamy:.2f} (○)', 
         fontsize=12, fontweight='bold', color=color_dreamy,
         va='center', ha='left')
-ax.text(n_patients + 2, mean_duck, f'Mean: {mean_duck:.2f} (△)', 
+ax.text(n_patients + 8, mean_duck, f'Mean: {mean_duck:.2f} (△)', 
         fontsize=12, fontweight='bold', color=color_duck,
         va='center', ha='left')
 
@@ -188,7 +188,96 @@ plt.tight_layout()
 plt.show()
 ```
 
+## Two Competing Models
 
+As readers of @fig-plot-outcomes, the easiest path for our brains is to accept the mental model of surgical outcomes depicted in @fig-example-node.
+
+```{python}
+#| label: fig-example-node
+#| echo: false
+#| fig-cap: "DAG Model Explaining Surgical Outcomes"
+
+import daft
+import matplotlib.pyplot as plt
+
+# Create a PGM object
+pgm = daft.PGM(dpi=150, alternate_style="outer")
+
+# Example of a professionally styled node
+pgm.add_node("surgeon_quality", "Surgeon\nQuality" + r" $(X)$", 1, 1, aspect = 3, scale = 1.1,
+             plot_params={
+                 'facecolor': 'lightgreen', 
+                 'edgecolor': 'darkgreen', 
+                 'linewidth': 2,
+                 'alpha': 0.8,
+             })
+pgm.add_node("surgical_outcomes", "Surgical\nOutcomes"+r" $(Y)$", 3.25, 1, aspect = 3, scale = 1.1,
+             plot_params={
+                 'facecolor': 'thistle', 
+                 'edgecolor': 'purple', 
+                 'linewidth': 2,
+                 'alpha': 0.8,
+             })
+pgm.add_edge("surgeon_quality", "surgical_outcomes")
+
+pgm.render()
+```
+
+Combined with @fig-example-node, the obvious conclusion is that Doc Dreamy is the superior surgeon, his dots are lower than Doc Duck's dots.
+
+That being said, we just learned in class how a "common cause" for both $X$ and $Y$ can lead to an association between the two that is not causal in nature.  For example, if $X$ is puddles on the road and $Y$ is people with umbrellas, it does not mean that the puddles cause people to have umbrellas.  Maybe a common cause for both, i.e. rain ($Z$), is the sole reason for the observed association.
+
+In addition, Nassim Taleb hints at something we can explore.  Maybe there is an alternate model.  I will suggest it is the model in @fig-example2-node.
+
+```{python}
+#| label: fig-example2-node
+#| echo: false
+#| fig-cap: "DAG Model Explaining Surgical Outcomes"
+
+import daft
+import matplotlib.pyplot as plt
+
+# Create a PGM object
+pgm = daft.PGM(dpi=150, alternate_style="outer")
+
+# Example of a professionally styled node
+pgm.add_node("surgeon_quality", "Surgeon\nQuality" + r" $(X)$", 1, 1, aspect = 3, scale = 1.1,
+             plot_params={
+                 'facecolor': 'lightgreen', 
+                 'edgecolor': 'darkgreen', 
+                 'linewidth': 2,
+                 'alpha': 0.8,
+             })
+pgm.add_node("surgical_outcomes", "Surgical\nOutcomes"+r" $(Y)$", 3.3, 1, aspect = 3, scale = 1.1,
+             plot_params={
+                 'facecolor': 'thistle', 
+                 'edgecolor': 'purple', 
+                 'linewidth': 2,
+                 'alpha': 0.8,
+             })
+pgm.add_node("severity", "Patient\nSeverity" + r" $(Z)$", 2.15, 2, aspect = 3, scale = 1.1,
+             plot_params={
+                 'facecolor': 'cadetblue', 
+                 'edgecolor': 'darkcyan', 
+                 'linewidth': 2,
+                 'alpha': 0.8,
+             })
+
+pgm.add_edge("surgeon_quality", "surgical_outcomes")
+pgm.add_edge("severity", "surgical_outcomes")
+pgm.add_edge("severity", "surgeon_quality")
+pgm.render()
+```
+
+A possible causal story would go something like this.  Both surgeons have full schedules with Dr. Dreamy scheduling surgeries 3 weeks in advance and Dr. Duck scheduling surgeries 1 week in advance.  As such, patients who are not in a rush, usually low severity patients, are more likely to choose Dr. Dreamy based on his website and picture.  However, patients who are in more of a rush, usually high severity patients, are more likely to choose Dr. Duck based on his availability and the fact that he is the only surgeon who can see them immediately.
+
+::: {.callout-warning title="Assumption: Slow Progression of Patient Severity" icon=false}
+For pedagogical simplicity, we assume that patient severity progresses slowly enough that a 2-week delay (i.e., waiting for Dr. Dreamy's availability) has zero effect on surgical outcomes. This delay affects only how quickly patients receive surgical relief, not the eventual outcome itself. We will eventually have the tools to explore cases where time-to-surgery is also a factor, but for now we focus solely on whether initial patient severity might create a spurious or biased association between surgeon choice and outcomes.
+:::
+
+## Two Choices of What to Do
+
+The gold standard to establish causation is a randomized controlled trial.  That means, instead of letting patients choose their surgeon, we randomly assign them to either Dr. Dreamy or Dr. Duck.
 
 ## Randomization to the Rescue
 

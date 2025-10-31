@@ -58,6 +58,35 @@ div.csl-indent {
 
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -103,7 +132,7 @@ A Tale of Two Surgeons
 <div class="callout-body-container callout-body">
 <p><em>Paraphrased from</em> <span class="citation" data-cites="taleb2017surgeons">(<a href="#ref-taleb2017surgeons" role="doc-biblioref">Taleb 2017</a>)</span></p>
 <p>Imagine you need to choose between two surgeons of similar rank at the same hospital. The first surgeon matches our stereotype perfectly: refined appearance, silver-rimmed glasses, delicate hands, measured speech, and an office adorned with Ivy League diplomas. The second surgeon, by contrast, looks more like a butcher—overweight, large hands, unkempt appearance, and no visible credentials on the wall.</p>
-<p>Counterintuitively, the surgeon who doesn’t “look the part” may actually be the better choice. Why? Because when someone succeeds in their profession despite not fitting the expected appearance, it suggests they had to overcome significant perceptual biases. This success is likely due to what Nassim Taleb calls “skin in the game”—direct contact with reality that filters out incompetence, since reality is blind to appearances <span class="citation" data-cites="taleb2017surgeons">(<a href="#ref-taleb2017surgeons" role="doc-biblioref">Taleb 2017</a>)</span>.</p>
+<p>Counterintuitively, the surgeon who doesn’t “look the part” may actually be the better choice. Why? Because when someone succeeds in their profession despite not fitting the expected appearance, it suggests they had to overcome significant perceptual biases. And if we are lucky enough to have people who do not look the part, it is thanks to the presence of some skin in the game, the contact with reality that filters out incompetence. <span class="citation" data-cites="taleb2017surgeons">(<a href="#ref-taleb2017surgeons" role="doc-biblioref">Taleb 2017</a>)</span></p>
 </div>
 </div>
 </section>
@@ -115,7 +144,7 @@ A Tale of Two Surgeons
 <div id="fig-plot-outcomes" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-plot-outcomes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="sampleReport_files/figure-html/fig-plot-outcomes-output-1.png" width="758" height="567" class="figure-img">
+<img src="sampleReport_files/figure-html/fig-plot-outcomes-output-1.png" width="756" height="567" class="figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-outcomes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;1: Post-Surgical Symptom Score (lower is better)by Patient and Doctor
@@ -124,6 +153,59 @@ Figure&nbsp;1: Post-Surgical Symptom Score (lower is better)by Patient and Docto
 </div>
 </div>
 </div>
+</section>
+<section id="two-competing-models" class="level2">
+<h2 class="anchored" data-anchor-id="two-competing-models">Two Competing Models</h2>
+<p>As readers of <a href="#fig-plot-outcomes" class="quarto-xref">Figure&nbsp;1</a>, the easiest path for our brains is to accept the mental model of surgical outcomes depicted in <a href="#fig-example-node" class="quarto-xref">Figure&nbsp;2</a>.</p>
+<div id="cell-fig-example-node" class="cell" data-execution_count="5">
+<div class="cell-output cell-output-display">
+<div id="fig-example-node" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-example-node-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="sampleReport_files/figure-html/fig-example-node-output-1.png" width="514" height="118" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-example-node-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: DAG Model Explaining Surgical Outcomes
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Combined with <a href="#fig-example-node" class="quarto-xref">Figure&nbsp;2</a>, the obvious conclusion is that Doc Dreamy is the superior surgeon, his dots are lower than Doc Duck’s dots.</p>
+<p>That being said, we just learned in class how a “common cause” for both <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> can lead to an association between the two that is not causal in nature. For example, if <span class="math inline">\(X\)</span> is puddles on the road and <span class="math inline">\(Y\)</span> is people with umbrellas, it does not mean that the puddles cause people to have umbrellas. Maybe a common cause for both, i.e.&nbsp;rain (<span class="math inline">\(Z\)</span>), is the sole reason for the observed association.</p>
+<p>In addition, Nassim Taleb hints at something we can explore. Maybe there is an alternate model. I will suggest it is the model in <a href="#fig-example2-node" class="quarto-xref">Figure&nbsp;3</a>.</p>
+<div id="cell-fig-example2-node" class="cell" data-execution_count="6">
+<div class="cell-output cell-output-display">
+<div id="fig-example2-node" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-example2-node-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="sampleReport_files/figure-html/fig-example2-node-output-1.png" width="520" height="236" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-example2-node-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: DAG Model Explaining Surgical Outcomes
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>A possible causal story would go something like this. Both surgeons have full schedules with Dr.&nbsp;Dreamy scheduling surgeries 3 weeks in advance and Dr.&nbsp;Duck scheduling surgeries 1 week in advance. As such, patients who are not in a rush, usually low severity patients, are more likely to choose Dr.&nbsp;Dreamy based on his website and picture. However, patients who are in more of a rush, usually high severity patients, are more likely to choose Dr.&nbsp;Duck based on his availability and the fact that he is the only surgeon who can see them immediately.</p>
+<div class="callout callout-style-default callout-warning no-icon callout-titled" title="Assumption: Slow Progression of Patient Severity">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Assumption: Slow Progression of Patient Severity
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For pedagogical simplicity, we assume that patient severity progresses slowly enough that a 2-week delay (i.e., waiting for Dr.&nbsp;Dreamy’s availability) has zero effect on surgical outcomes. This delay affects only how quickly patients receive surgical relief, not the eventual outcome itself. We will eventually have the tools to explore cases where time-to-surgery is also a factor, but for now we focus solely on whether initial patient severity might create a spurious or biased association between surgeon choice and outcomes.</p>
+</div>
+</div>
+</section>
+<section id="two-choices-of-what-to-do" class="level2">
+<h2 class="anchored" data-anchor-id="two-choices-of-what-to-do">Two Choices of What to Do</h2>
+<p>The gold standard to establish causation is a randomized controlled trial. That means, instead of letting patients choose their surgeon, we randomly assign them to either Dr.&nbsp;Dreamy or Dr.&nbsp;Duck.</p>
 </section>
 <section id="randomization-to-the-rescue" class="level2">
 <h2 class="anchored" data-anchor-id="randomization-to-the-rescue">Randomization to the Rescue</h2>
