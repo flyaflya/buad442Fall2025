@@ -36,7 +36,7 @@ import numpy as np
 # Set seed for reproducibility
 np.random.seed(123)
 
-# Create dataframe with 100 patients and severity scores
+# Create dataframe with 200 patients and severity scores
 n_patients = 100
 patients_df = (
     pd.DataFrame({
@@ -59,7 +59,7 @@ patients_df = (
         surgicalGoodness=lambda df: np.where(
             df['doctor_name'] == 'Doc Duck',
             np.random.normal(0.5, 1, n_patients),
-            np.random.normal(-0.5, 1, n_patients)
+            np.random.normal(-0.4, 1, n_patients)
         ),
         # Calculate post-surgical severity: initial severity - surgical goodness + 3
         post_surgical_severity=lambda df: df['severity'] - df['surgicalGoodness'] + 3
@@ -86,13 +86,36 @@ import pandas as pd
 # Read data from CSV
 patients_df = pd.read_csv('patients_data.csv')
 
+# Get number of patients for inline display
+n_patients = len(patients_df)
+
 # Calculate mean post-surgical severity for each doctor
 # Convert to Python float to avoid np.float64() display in inline code
 mean_dreamy = float(patients_df[patients_df['doctor_name'] == 'Doc Dreamy']['post_surgical_severity'].mean())
 mean_duck = float(patients_df[patients_df['doctor_name'] == 'Doc Duck']['post_surgical_severity'].mean())
 ```
 
-@fig-plot-outcomes shows the post-surgical symptom score for 100 patients. Doc Duck's average post-surgical symptom score is `{python} round(mean_duck, 2)` while Doc Dreamy's average is `{python} round(mean_dreamy, 2)`. `{python} "Doc Duck performs better" if mean_duck < mean_dreamy else "Doc Dreamy performs better"` since lower scores indicate better outcomes. One might ask if the difference in average post-surgical symptom score is statistically significant. We can use a two-sample t-test to test this. 
+```{python}
+#| label: t-test
+#| echo: false
+#| message: false
+#| warning: false
+
+from scipy import stats
+
+# Separate data by doctor
+dreamy_scores = patients_df[patients_df['doctor_name'] == 'Doc Dreamy']['post_surgical_severity']
+duck_scores = patients_df[patients_df['doctor_name'] == 'Doc Duck']['post_surgical_severity']
+
+# Perform two-sample t-test
+t_stat, p_value = stats.ttest_ind(dreamy_scores, duck_scores)
+
+# Convert to Python floats for inline display
+t_stat = float(t_stat)
+p_value = float(p_value)
+```
+
+@fig-plot-outcomes shows the post-surgical symptom score for `{python} n_patients` patients. Doc Duck's average post-surgical symptom score is `{python} round(mean_duck, 2)` while Doc Dreamy's average is `{python} round(mean_dreamy, 2)`. `{python} "Doc Duck performs better" if mean_duck < mean_dreamy else "Doc Dreamy performs better"` since lower scores indicate better outcomes. One might ask if the difference in average post-surgical symptom score is statistically significant. A two-sample t-test reveals `{python} "a statistically significant difference" if p_value < 0.05 else "no statistically significant difference"` (t = `{python} round(t_stat, 3)`, p = `{python} round(p_value, 3)`). 
 
 ```{python}
 #| label: fig-plot-outcomes
@@ -109,6 +132,9 @@ import matplotlib.pyplot as plt
 # Read data from CSV file
 patients_df = pd.read_csv('patients_data.csv')
 
+# Get number of patients for positioning text annotations
+n_patients = len(patients_df)
+
 # Colorblind-friendly colors
 # Using a blue-turquoise and coral-orange that work well for colorblind viewers
 color_dreamy = '#4E79A7'  # Blue
@@ -121,11 +147,11 @@ fig, ax = plt.subplots(figsize=(8, 6))
 dreamy_data = patients_df[patients_df['doctor_name'] == 'Doc Dreamy']
 duck_data = patients_df[patients_df['doctor_name'] == 'Doc Duck']
 
-# Create scatter plots
+# Create scatter plots with different shapes for black and white printing
 ax.scatter(dreamy_data['patient'], dreamy_data['post_surgical_severity'], 
-           color=color_dreamy, label='Doc Dreamy', alpha=0.7, s=60)
+           color=color_dreamy, marker='o', label='Doc Dreamy', alpha=0.7, s=60)
 ax.scatter(duck_data['patient'], duck_data['post_surgical_severity'], 
-           color=color_duck, label='Doc Duck', alpha=0.7, s=60)
+           color=color_duck, marker='^', label='Doc Duck', alpha=0.7, s=60)
 
 # Calculate mean post-surgical symptom score for each doctor
 mean_dreamy = dreamy_data['post_surgical_severity'].mean()
@@ -135,11 +161,11 @@ mean_duck = duck_data['post_surgical_severity'].mean()
 ax.axhline(y=mean_dreamy, color=color_dreamy, linestyle='--', linewidth=2, alpha=0.8)
 ax.axhline(y=mean_duck, color=color_duck, linestyle='--', linewidth=2, alpha=0.8)
 
-# Add text annotations for means
-ax.text(102, mean_dreamy, f'Mean: {mean_dreamy:.2f}', 
+# Add text annotations for means with shape symbols
+ax.text(n_patients + 2, mean_dreamy, f'Mean: {mean_dreamy:.2f} (○)', 
         fontsize=12, fontweight='bold', color=color_dreamy,
         va='center', ha='left')
-ax.text(102, mean_duck, f'Mean: {mean_duck:.2f}', 
+ax.text(n_patients + 2, mean_duck, f'Mean: {mean_duck:.2f} (△)', 
         fontsize=12, fontweight='bold', color=color_duck,
         va='center', ha='left')
 
@@ -161,6 +187,8 @@ ax.tick_params(labelsize=12)
 plt.tight_layout()
 plt.show()
 ```
+
+
 
 ## Randomization to the Rescue
 
