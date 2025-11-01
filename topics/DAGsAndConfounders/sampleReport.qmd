@@ -427,7 +427,7 @@ p_value_randomized = float(p_value_randomized)
 
 ```{python}
 #| label: fig-plot-outcomes-randomized
-#| fig-cap: "Post-Surgical Symptom Score (lower is better) by Patient Severity - (Observed)"
+#| fig-cap: "Post-Surgical Symptom Score (lower is better) for randomized patients."
 #| fig-width: 7
 #| fig-height: 4.5
 #| echo: false
@@ -496,7 +496,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-## How could we have known this without randomization?
+## How could we have known Doc Duck was the better surgeon without randomization?
 
 The key to handling a common cause confounder is to stratify by the common cause. In general, this means we examine the relationship between treatment and outcome within groups that share the same value of the confounder. In our example, this means we look at patients of similar severity and compare the outcomes of the surgeons for patients of similar severity. There are mathematically sophisticated ways to do this, but here we demonstrate it visually. Since patient number lacks inherent meaning, the following figure shows patient severity on the x-axis and post-surgical symptom score on the y-axis.  
 
