@@ -1,6 +1,6 @@
 ---
 title: "Confounder & Randomization Challenge"
-subtitle: "Using Randomization to Overcome A Common Cause Confounder"
+subtitle: "Using Randomization & Stratification to Overcome A Common Cause Confounder"
 format:
   html: default
 bibliography: references.bib
@@ -8,8 +8,6 @@ execute:
   echo: true
   eval: true
 ---
-
-# Confounder & Randomization Challenge
 
 ## Motivating Story
 
@@ -580,13 +578,13 @@ Looking at @fig-plot-outcomes-severity, the value of stratifying by severity is 
 
 ## Summary
 
-Here's the problem that makes people terrified of statistics: the numbers can mislead you. Or rather, you can be misled *by* the numbers when you don't understand what they're really telling you.
+Here's the problem with graphs and statistics in general: the numbers can easily mislead you. Or rather, you can be misled *by* the numbers when you don't understand what they're really telling you.
 
 When you just look at the raw data and ask who had better outcomes, Doc Dreamy wins. Lower scores look great on paper. But here's where it gets important: that association doesn't mean what you think it means. Correlation is not causation, and we all know that, but we forget it every single time because our brains are wired to see patterns and assign causes.
 
-The real villain here is patient severity. It operates like a puppeteer behind the curtain, making Doc Dreamy look good by sending him easier cases while sending Doc Duck the harder ones. When you don't randomize, you can't tell the difference between "Doc Dreamy is a better surgeon" and "Doc Dreamy got lucky with his patient assignment."
+The real villain here is patient severity. It operates like a puppeteer behind the curtain, making Doc Dreamy look good by sending him easier cases while sending Doc Duck the harder ones. When you don't randomize, you can't tell the difference between "Doc Dreamy is a better surgeon" and "Doc Dreamy got lucky with his patient assignment."  On any graph or in any headline, look for the common-cause-confounder villian that is unaccounted for.
 
-Randomization is your defense against this kind of confounding. Flip a coin, assign patients randomly, and suddenly the puppeteer loses control. Now you can actually see who the better surgeon is. And the surprise is that it's the one who doesn't look the part. The data wasn't lying; it was just answering a different question than you thought you were asking.
+Randomization is an excellent defense against this kind of confounding. Flip a coin, assign patients randomly, and suddenly the puppeteer loses control. Now you can actually see who the better surgeon is. And the surprise is that it's the one who doesn't look the part. The data wasn't lying; it was just olidanswering a different question than you thought you were asking.
 
 If you can't randomize, and that's most of the time, you stratify. Look within groups of similar patient severity. Compare apples to apples, not apples to oranges. It's more work, and it's less satisfying than a clean randomized trial, but it's better than being fooled by confounding.
 
