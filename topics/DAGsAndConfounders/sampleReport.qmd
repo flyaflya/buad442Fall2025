@@ -225,7 +225,7 @@ pgm.render()
 
 Combined with @fig-example-node, the obvious conclusion is that **Doc Dreamy is the superior surgeon because his patients' scores are lower than Doc Duck's patients' scores**.
 
-However, we just learned in class how a "common cause" for both $X$ and $Y$ can lead to an association between the two that is not causal in nature. For example, if $X$ is puddles on the road and $Y$ is people with umbrellas, it does not mean that the puddles cause people to have umbrellas. Perhaps a common cause for both, namely rain ($Z$), is the sole reason for the observed association.
+However, a "common cause" confounder can create an association between $X$ and $Y$ that is not causal in nature. For example, if $X$ is puddles on the road and $Y$ is people with umbrellas, it does not mean that the puddles cause people to have umbrellas. Instead, a common cause for both, namely rain ($Z$), is the sole reason for the observed association. The presence of rain causes both puddles and people to carry umbrellas, creating a spurious correlation between the two.
 
 As Nassim Taleb hints, there may be an alternate explanation. Consider the model shown in @fig-example2-node.
 
@@ -272,7 +272,7 @@ pgm.render()
 A possible causal story would go something like this. Both surgeons have full schedules, with Dr. Dreamy scheduling surgeries 3 weeks in advance and Dr. Duck scheduling surgeries 1 week in advance. As such, patients who are not in a rush, usually those with low severity, are more likely to choose Dr. Dreamy based on his website and picture. However, patients who are in more of a rush, usually those with high severity, are more likely to choose Dr. Duck based on his availability and the fact that he is the only surgeon who can see them immediately.
 
 ::: {.callout-warning title="Assumption: Slow Progression of Patient Severity" icon=false}
-For pedagogical simplicity, we assume that patient severity progresses slowly enough that a 2-week delay (i.e., waiting for Dr. Dreamy's availability) has zero effect on surgical outcomes. This delay affects only how quickly patients receive surgical relief, not the eventual outcome itself. We will eventually have the tools to explore cases where time-to-surgery is also a factor, but for now we focus solely on whether initial patient severity might create a spurious or biased association between surgeon choice and outcomes.
+For simplicity, we assume that patient severity progresses slowly enough that a 2-week delay (i.e., waiting for Dr. Dreamy's availability) has zero effect on surgical outcomes. This delay affects only how quickly patients receive surgical relief, not the eventual outcome itself. While time-to-surgery can be an important factor in other contexts, here we focus solely on whether initial patient severity might create a spurious or biased association between surgeon choice and outcomes.
 :::
 
 ## The Solution: Randomization
@@ -500,7 +500,7 @@ plt.show()
 
 ## How could we have known this without randomization?
 
-The key to handling a common cause confounder is to stratify by the common cause. In general, this means we examine the relationship between treatment and outcome within groups that share the same value of the confounder. In our example, this means we look at patients of similar severity and compare the outcomes of the surgeons for patients of similar severity. There are mathematically sophisticated ways to do this, but we will demonstrate it visually. Since patient number lacks inherent meaning, let's alter @fig-plot-outcomes to put patient severity on the x-axis and post-surgical symptom score on the y-axis.  
+The key to handling a common cause confounder is to stratify by the common cause. In general, this means we examine the relationship between treatment and outcome within groups that share the same value of the confounder. In our example, this means we look at patients of similar severity and compare the outcomes of the surgeons for patients of similar severity. There are mathematically sophisticated ways to do this, but here we demonstrate it visually. Since patient number lacks inherent meaning, the following figure shows patient severity on the x-axis and post-surgical symptom score on the y-axis.  
 
 ```{python}
 #| label: fig-plot-outcomes-severity
