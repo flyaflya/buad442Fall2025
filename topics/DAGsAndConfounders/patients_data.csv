@@ -1,4 +1,4 @@
-patient,severity,doctor_id,doctor_name,post_surgical_severity
+patient,severity,doctor_id,doctor_name,post_surgical_score
 1,-1.0856306033005612,1,Doc Dreamy,2.669278228439524
 2,0.9973454465835858,0,Doc Duck,6.054400050651444
 3,0.28297849805199204,0,Doc Duck,3.3318989113742123
