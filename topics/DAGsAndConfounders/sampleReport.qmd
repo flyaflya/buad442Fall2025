@@ -9,7 +9,7 @@ execute:
   eval: true
 ---
 
-## Motivating Story
+## The Paradox: Who *Really* Is the Better Surgeon?
 
 ::: {.callout-tip title="A Tale of Two Surgeons" icon=false}
 *Paraphrased from* [@taleb2017surgeons]
@@ -23,7 +23,7 @@ Imagine you need to choose between two surgeons of similar rank at the same hosp
 Counterintuitively, the surgeon who doesn't "look the part" may actually be the better choice. Why? Because when someone succeeds in their profession despite not fitting the expected appearance, it suggests they had to overcome significant perceptual biases. And if we are lucky enough to have people who do not look the part, it is thanks to the presence of some skin in the game, the contact with reality that filters out incompetence. [@taleb2017surgeons]
 :::
 
-## Data on Two Surgeons
+## Observational Data: A Misleading Victory for Doc Dreamy
 
 ```{python}
 #| label: simulate-data
@@ -188,20 +188,20 @@ plt.tight_layout()
 plt.show()
 ```
 
-## Two Competing Models
+## The Hidden Confounder: Patient Severity Explains It All
 
 As readers of @fig-plot-outcomes, the easiest path for our brains is to accept the mental model of surgical outcomes depicted in @fig-example-node.
 
 ```{python}
-#| label: fig-example-node
+#| label: save-dag-example-node
 #| echo: false
-#| fig-cap: "DAG Model Explaining Surgical Outcomes"
+#| fig-show: false
 
 import daft
 import matplotlib.pyplot as plt
 
 # Create a PGM object
-pgm = daft.PGM(dpi=125, alternate_style="outer")
+pgm = daft.PGM(dpi=300, alternate_style="outer")
 
 # Example of a professionally styled node
 pgm.add_node("surgeon", "Surgeon\n" + r" $(X)$", 1, 1, aspect = 3, scale = 1.1,
@@ -220,8 +220,13 @@ pgm.add_node("surgical_outcomes", "Surgical\nOutcomes"+r" $(Y)$", 3.25, 1, aspec
              })
 pgm.add_edge("surgeon", "surgical_outcomes")
 
+# Render and save the figure
 pgm.render()
+pgm.savefig('dag-example-node.png', dpi=300)
+plt.close(pgm.figure)
 ```
+
+![DAG Model Explaining Surgical Outcomes](dag-example-node.png){#fig-example-node width=50%}
 
 The obvious conclusion from using the mental model of @fig-example-node and the data shown in @fig-plot-outcomes is that **Doc Dreamy is the superior surgeon because his patients' scores are lower than Doc Duck's patients' scores**.
 
@@ -230,15 +235,15 @@ However, a "common cause" confounder can create an association between $X$ and $
 As Nassim Taleb hints, there may be an alternate explanation. Consider the model shown in @fig-example2-node.  Might there be an unaccounted for common cause that is causing the association between surgeon choice and surgical outcomes?
 
 ```{python}
-#| label: fig-example2-node
+#| label: save-dag-example2-node
 #| echo: false
-#| fig-cap: "DAG Model Explaining Surgical Outcomes"
+#| fig-show: false
 
 import daft
 import matplotlib.pyplot as plt
 
 # Create a PGM object
-pgm = daft.PGM(dpi=125, alternate_style="outer")
+pgm = daft.PGM(dpi=300, alternate_style="outer")
 
 # Example of a professionally styled node
 pgm.add_node("surgeon", "Surgeon\n" + r" $(X)$", 1, 1, aspect = 3, scale = 1.1,
@@ -266,8 +271,14 @@ pgm.add_node("severity", "Patient\nSeverity" + r" $(Z)$", 2.15, 2, aspect = 3, s
 pgm.add_edge("surgeon", "surgical_outcomes")
 pgm.add_edge("severity", "surgical_outcomes")
 pgm.add_edge("severity", "surgeon")
+
+# Render and save the figure
 pgm.render()
+pgm.savefig('dag-example2-node.png', dpi=300)
+plt.close(pgm.figure)
 ```
+
+![DAG Model Explaining Surgical Outcomes](dag-example2-node.png){#fig-example2-node width=50%}
 
 A possible common-cause story would go something like this. Both surgeons have full schedules, with Dr. Dreamy scheduling surgeries 3 weeks in advance and Dr. Duck scheduling surgeries 1 week in advance. As such, patients who are not in a rush, usually those with low severity, are more likely to choose Dr. Dreamy based on his website and picture. However, patients who are in more of a rush, usually those with high severity, are more likely to choose Dr. Duck based on his availability and the fact that he is the only surgeon who can see them immediately.
 
@@ -275,22 +286,22 @@ A possible common-cause story would go something like this. Both surgeons have f
 For simplicity, we assume that patient severity progresses slowly enough that a 2-week delay (i.e., waiting for Dr. Dreamy's availability) has zero effect on surgical outcomes. This delay affects only how quickly patients receive surgical relief, not the eventual outcome itself. While time-to-surgery can be an important factor in other contexts, here we focus solely on whether initial patient severity might create a spurious or biased association between surgeon choice and outcomes.
 :::
 
-## The Solution: Randomization
+## Solution 1: Randomization — Break the Confounding Path
 
 The gold standard to establish causation is a randomized controlled trial. Instead of letting patients choose their surgeon, we randomly assign them to either Dr. Dreamy or Dr. Duck.
 
 This is precisely the kind of problem randomization can solve. By randomly assigning patients to surgeons, we break the potential confounding relationship where patient severity ends up correlated with choice of surgeon. Since assignment is now random rather than based on patient choice between a good-looking doctor and a doctor available more quickly, we eliminate this confounding pathway. This break, pictured in @fig-example3-node, allows us to assess whether surgeon identity truly matters for surgical success, or if the observed association was merely due to patient severity influencing both surgeon choice and outcomes.
 
 ```{python}
-#| label: fig-example3-node
+#| label: save-dag-example3-node
 #| echo: false
-#| fig-cap: "DAG Model Explaining Surgical Outcomes"
+#| fig-show: false
 
 import daft
 import matplotlib.pyplot as plt
 
 # Create a PGM object
-pgm = daft.PGM(dpi=125, alternate_style="outer")
+pgm = daft.PGM(dpi=300, alternate_style="outer")
 
 # Example of a professionally styled node
 pgm.add_node("surgeon", "Surgeon\n" + r" $(X)$", 1, 1, aspect = 3, scale = 1.1,
@@ -325,8 +336,14 @@ pgm.add_node("random", "Randomization\n" + r" $(R)$", -0.15, 2, aspect = 3, scal
 pgm.add_edge("surgeon", "surgical_outcomes")
 pgm.add_edge("severity", "surgical_outcomes")
 pgm.add_edge("random", "surgeon")
+
+# Render and save the figure
 pgm.render()
+pgm.savefig('dag-example3-node.png', dpi=300)
+plt.close(pgm.figure)
 ```
+
+![DAG Model Explaining Surgical Outcomes](dag-example3-node.png){#fig-example3-node width=65%}
 
 
 @fig-example3-node shows the DAG model for the randomization scenario. In this scenario, patient severity ($Z$) is no longer a cause of surgeon choice ($X$). Instead, randomization ($R$) completely determines surgeon assignment ($X$). This breaks the confounding relationship between patient severity and surgeon choice, allowing us to assess whether the surgeons themselves truly matter for surgical outcomes.
@@ -500,7 +517,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-## How could we have known Doc Duck was the better surgeon without randomization?
+## Solution 2: Stratification — When You Can’t Randomize
 
 The key to handling a common cause confounder is to stratify by the common cause. In general, this means we examine the relationship between treatment and outcome within groups that share the same value of the confounder. In our example, this means we look at patients of similar severity and compare the outcomes of the surgeons for patients of similar severity. There are mathematically sophisticated ways to do this, but here we demonstrate it visually. Since patient number lacks inherent meaning, the following figure shows patient severity on the x-axis and post-surgical symptom score on the y-axis.  
 
@@ -583,7 +600,7 @@ Looking at @fig-plot-outcomes-severity, the value of stratifying by severity is 
 
 Within the highlighted region, Doc Dreamy's blue circles tend to be higher (worse) than Doc Duck's red triangles for these patients. It is also obvious that Doc Duck is seeing the more severe patients overall, as his red triangles are generally to the right of Doc Dreamy's blue circles on the x-axis. This is exactly what we would expect if patient severity were a common cause of surgeon choice and surgical outcomes. Despite the aggregate statistics pointing to Doc Dreamy having lower (better) post-surgical symptom scores on average, our visual analysis of this overlapping region leads us to conclude that Doc Duck is actually the better surgeon—a conclusion that would be obscured if we only looked at the means without stratifying by severity.
 
-## Summary
+## How to Solve the Confounder Challenge
 
 Here's the problem with graphs and statistics in general: the numbers can easily mislead you. Or rather, you can be misled *by* the numbers when you don't understand what they're really telling you.
 

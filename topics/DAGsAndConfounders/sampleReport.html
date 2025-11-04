@@ -116,8 +116,8 @@ window.Quarto = {
 </header>
 
 
-<section id="motivating-story" class="level2">
-<h2 class="anchored" data-anchor-id="motivating-story">Motivating Story</h2>
+<section id="the-paradox-who-really-is-the-better-surgeon" class="level2">
+<h2 class="anchored" data-anchor-id="the-paradox-who-really-is-the-better-surgeon">The Paradox: Who <em>Really</em> Is the Better Surgeon?</h2>
 <div class="callout callout-style-default callout-tip no-icon callout-titled" title="A Tale of Two Surgeons">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -137,8 +137,8 @@ A Tale of Two Surgeons
 </div>
 </div>
 </section>
-<section id="data-on-two-surgeons" class="level2">
-<h2 class="anchored" data-anchor-id="data-on-two-surgeons">Data on Two Surgeons</h2>
+<section id="observational-data-a-misleading-victory-for-doc-dreamy" class="level2">
+<h2 class="anchored" data-anchor-id="observational-data-a-misleading-victory-for-doc-dreamy">Observational Data: A Misleading Victory for Doc Dreamy</h2>
 <p>Let’s use data to figure out which surgeon performs better. <a href="#fig-plot-outcomes" class="quarto-xref">Figure&nbsp;1</a> shows the post-surgical symptom score for 100 patients. Doc Duck’s average post-surgical symptom score is 3.38 while Doc Dreamy’s average is 2.8. Doc Dreamy performs better since lower scores indicate better outcomes. One might ask if the difference in average post-surgical symptom score is statistically significant. A two-sample t-test reveals a statistically significant difference (t = -2.317, p = 0.023).</p>
 <div id="cell-fig-plot-outcomes" class="cell" data-message="false" data-execution_count="4">
 <div class="cell-output cell-output-display">
@@ -155,39 +155,31 @@ Figure&nbsp;1: Post-Surgical Symptom Score (lower is better) - Observed Data
 </div>
 </div>
 </section>
-<section id="two-competing-models" class="level2">
-<h2 class="anchored" data-anchor-id="two-competing-models">Two Competing Models</h2>
+<section id="the-hidden-confounder-patient-severity-explains-it-all" class="level2">
+<h2 class="anchored" data-anchor-id="the-hidden-confounder-patient-severity-explains-it-all">The Hidden Confounder: Patient Severity Explains It All</h2>
 <p>As readers of <a href="#fig-plot-outcomes" class="quarto-xref">Figure&nbsp;1</a>, the easiest path for our brains is to accept the mental model of surgical outcomes depicted in <a href="#fig-example-node" class="quarto-xref">Figure&nbsp;2</a>.</p>
-<div id="cell-fig-example-node" class="cell" data-execution_count="5">
-<div class="cell-output cell-output-display">
 <div id="fig-example-node" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-example-node-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="sampleReport_files/figure-html/fig-example-node-output-1.png" width="428" height="98" class="figure-img">
+<img src="dag-example-node.png" class="img-fluid figure-img" style="width:50.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-example-node-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;2: DAG Model Explaining Surgical Outcomes
 </figcaption>
 </figure>
 </div>
-</div>
-</div>
 <p>The obvious conclusion from using the mental model of <a href="#fig-example-node" class="quarto-xref">Figure&nbsp;2</a> and the data shown in <a href="#fig-plot-outcomes" class="quarto-xref">Figure&nbsp;1</a> is that <strong>Doc Dreamy is the superior surgeon because his patients’ scores are lower than Doc Duck’s patients’ scores</strong>.</p>
 <p>However, a “common cause” confounder can create an association between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> that is not causal in nature. For example, if <span class="math inline">\(X\)</span> is puddles on the road and <span class="math inline">\(Y\)</span> is people with umbrellas, it does not mean that the puddles cause people to have umbrellas. Instead, a common cause for both, namely rain (<span class="math inline">\(Z\)</span>), is the sole reason for the observed association. The presence of rain causes both puddles and people to carry umbrellas, creating a spurious correlation between the two.</p>
 <p>As Nassim Taleb hints, there may be an alternate explanation. Consider the model shown in <a href="#fig-example2-node" class="quarto-xref">Figure&nbsp;3</a>. Might there be an unaccounted for common cause that is causing the association between surgeon choice and surgical outcomes?</p>
-<div id="cell-fig-example2-node" class="cell" data-execution_count="6">
-<div class="cell-output cell-output-display">
 <div id="fig-example2-node" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-example2-node-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="sampleReport_files/figure-html/fig-example2-node-output-1.png" width="433" height="197" class="figure-img">
+<img src="dag-example2-node.png" class="img-fluid figure-img" style="width:50.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-example2-node-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;3: DAG Model Explaining Surgical Outcomes
 </figcaption>
 </figure>
-</div>
-</div>
 </div>
 <p>A possible common-cause story would go something like this. Both surgeons have full schedules, with Dr.&nbsp;Dreamy scheduling surgeries 3 weeks in advance and Dr.&nbsp;Duck scheduling surgeries 1 week in advance. As such, patients who are not in a rush, usually those with low severity, are more likely to choose Dr.&nbsp;Dreamy based on his website and picture. However, patients who are in more of a rush, usually those with high severity, are more likely to choose Dr.&nbsp;Duck based on his availability and the fact that he is the only surgeon who can see them immediately.</p>
 <div class="callout callout-style-default callout-warning no-icon callout-titled" title="Assumption: Slow Progression of Patient Severity">
@@ -204,23 +196,19 @@ Assumption: Slow Progression of Patient Severity
 </div>
 </div>
 </section>
-<section id="the-solution-randomization" class="level2">
-<h2 class="anchored" data-anchor-id="the-solution-randomization">The Solution: Randomization</h2>
+<section id="solution-1-randomization-break-the-confounding-path" class="level2">
+<h2 class="anchored" data-anchor-id="solution-1-randomization-break-the-confounding-path">Solution 1: Randomization — Break the Confounding Path</h2>
 <p>The gold standard to establish causation is a randomized controlled trial. Instead of letting patients choose their surgeon, we randomly assign them to either Dr.&nbsp;Dreamy or Dr.&nbsp;Duck.</p>
 <p>This is precisely the kind of problem randomization can solve. By randomly assigning patients to surgeons, we break the potential confounding relationship where patient severity ends up correlated with choice of surgeon. Since assignment is now random rather than based on patient choice between a good-looking doctor and a doctor available more quickly, we eliminate this confounding pathway. This break, pictured in <a href="#fig-example3-node" class="quarto-xref">Figure&nbsp;4</a>, allows us to assess whether surgeon identity truly matters for surgical success, or if the observed association was merely due to patient severity influencing both surgeon choice and outcomes.</p>
-<div id="cell-fig-example3-node" class="cell" data-execution_count="7">
-<div class="cell-output cell-output-display">
 <div id="fig-example3-node" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-example3-node-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="sampleReport_files/figure-html/fig-example3-node-output-1.png" width="546" height="197" class="figure-img">
+<img src="dag-example3-node.png" class="img-fluid figure-img" style="width:65.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-example3-node-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;4: DAG Model Explaining Surgical Outcomes
 </figcaption>
 </figure>
-</div>
-</div>
 </div>
 <p><a href="#fig-example3-node" class="quarto-xref">Figure&nbsp;4</a> shows the DAG model for the randomization scenario. In this scenario, patient severity (<span class="math inline">\(Z\)</span>) is no longer a cause of surgeon choice (<span class="math inline">\(X\)</span>). Instead, randomization (<span class="math inline">\(R\)</span>) completely determines surgeon assignment (<span class="math inline">\(X\)</span>). This breaks the confounding relationship between patient severity and surgeon choice, allowing us to assess whether the surgeons themselves truly matter for surgical outcomes.</p>
 <section id="our-data-doesnt-have-counterfactuals-how-can-we-know-what-would-have-happened-to-those-patients-if-we-had-randomized" class="level3">
@@ -257,8 +245,8 @@ Figure&nbsp;5: Post-Surgical Symptom Score (lower is better) for randomized pati
 </div>
 </section>
 </section>
-<section id="how-could-we-have-known-doc-duck-was-the-better-surgeon-without-randomization" class="level2">
-<h2 class="anchored" data-anchor-id="how-could-we-have-known-doc-duck-was-the-better-surgeon-without-randomization">How could we have known Doc Duck was the better surgeon without randomization?</h2>
+<section id="solution-2-stratification-when-you-cant-randomize" class="level2">
+<h2 class="anchored" data-anchor-id="solution-2-stratification-when-you-cant-randomize">Solution 2: Stratification — When You Can’t Randomize</h2>
 <p>The key to handling a common cause confounder is to stratify by the common cause. In general, this means we examine the relationship between treatment and outcome within groups that share the same value of the confounder. In our example, this means we look at patients of similar severity and compare the outcomes of the surgeons for patients of similar severity. There are mathematically sophisticated ways to do this, but here we demonstrate it visually. Since patient number lacks inherent meaning, the following figure shows patient severity on the x-axis and post-surgical symptom score on the y-axis.</p>
 <div id="cell-fig-plot-outcomes-severity" class="cell" data-message="false" data-execution_count="12">
 <div class="cell-output cell-output-display">
@@ -277,8 +265,8 @@ Figure&nbsp;6: Post-Surgical Symptom Score (lower is better) by Patient and Seve
 <p>Looking at <a href="#fig-plot-outcomes-severity" class="quarto-xref">Figure&nbsp;6</a>, the value of stratifying by severity is visually most obvious with initial patient severity scores between -1 and 1 (highlighted in the overlay). We chose this region because it shows substantial overlap between the two surgeons—both surgeons have considerable data within this range, making it an ideal region for comparing their performance. Outside of this range, there is less data available for making direct comparisons: Doc Duck sees more of the higher-severity patients (severity &gt; 1), while Doc Dreamy sees more of the lower-severity patients (severity &lt; -1).</p>
 <p>Within the highlighted region, Doc Dreamy’s blue circles tend to be higher (worse) than Doc Duck’s red triangles for these patients. It is also obvious that Doc Duck is seeing the more severe patients overall, as his red triangles are generally to the right of Doc Dreamy’s blue circles on the x-axis. This is exactly what we would expect if patient severity were a common cause of surgeon choice and surgical outcomes. Despite the aggregate statistics pointing to Doc Dreamy having lower (better) post-surgical symptom scores on average, our visual analysis of this overlapping region leads us to conclude that Doc Duck is actually the better surgeon—a conclusion that would be obscured if we only looked at the means without stratifying by severity.</p>
 </section>
-<section id="summary" class="level2">
-<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<section id="how-to-solve-the-confounder-challenge" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-solve-the-confounder-challenge">How to Solve the Confounder Challenge</h2>
 <p>Here’s the problem with graphs and statistics in general: the numbers can easily mislead you. Or rather, you can be misled <em>by</em> the numbers when you don’t understand what they’re really telling you.</p>
 <p>When you just look at the raw data and ask who had better outcomes, Doc Dreamy wins. Lower scores look great on paper. But here’s where it gets important: that association doesn’t mean what you think it means. Correlation is not causation, and we all know that, but we forget it every single time because our brains are wired to see patterns and assign causes.</p>
 <p>The real villain here is patient severity. It operates like a puppeteer behind the curtain, making Doc Dreamy look good by sending him easier cases while sending Doc Duck the harder ones. When you don’t randomize, you can’t tell the difference between “Doc Dreamy is a better surgeon” and “Doc Dreamy got lucky with his patient assignment.” On any graph or in any headline, look for the common-cause-confounder villian that is unaccounted for.</p>
