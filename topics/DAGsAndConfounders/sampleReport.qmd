@@ -14,7 +14,11 @@ execute:
 ::: {.callout-tip title="A Tale of Two Surgeons" icon=false}
 *Paraphrased from* [@taleb2017surgeons]
 
-Imagine you need to choose between two surgeons of similar rank at the same hospital. The first surgeon matches our stereotype perfectly: refined appearance, silver-rimmed glasses, delicate hands, measured speech, and an office adorned with Ivy League diplomas. The second surgeon, by contrast, looks more like a butcher—overweight, large hands, unkempt appearance, and no visible credentials on the wall.
+<div style="float: right; margin-left: 15px; margin-bottom: 10px;">
+<img src="docSideBySide.jpg" alt="Doc Dreamy and Doc Duck side by side" style="max-width: 250px; height: auto; border-radius: 5px;">
+</div>
+
+Imagine you need to choose between two surgeons of similar rank at the same hospital. The first surgeon, Doc Dreamy, matches our stereotype perfectly: refined appearance, silver-rimmed glasses, delicate hands, measured speech, and an office adorned with Ivy League diplomas (see the image). The second surgeon, Doc Duck, by contrast, looks more like a butcher—overweight, with large hands, an unkempt appearance, and no visible credentials on the wall.
 
 Counterintuitively, the surgeon who doesn't "look the part" may actually be the better choice. Why? Because when someone succeeds in their profession despite not fitting the expected appearance, it suggests they had to overcome significant perceptual biases. And if we are lucky enough to have people who do not look the part, it is thanks to the presence of some skin in the game, the contact with reality that filters out incompetence. [@taleb2017surgeons]
 :::
@@ -113,7 +117,7 @@ t_stat = float(t_stat)
 p_value = float(p_value)
 ```
 
-@fig-plot-outcomes shows the post-surgical symptom score for `{python} n_patients` patients. Doc Duck's average post-surgical symptom score is `{python} round(mean_duck, 2)` while Doc Dreamy's average is `{python} round(mean_dreamy, 2)`. `{python} "Doc Duck performs better" if mean_duck < mean_dreamy else "Doc Dreamy performs better"` since lower scores indicate better outcomes. One might ask if the difference in average post-surgical symptom score is statistically significant. A two-sample t-test reveals `{python} "a statistically significant difference" if p_value < 0.05 else "no statistically significant difference"` (t = `{python} round(t_stat, 3)`, p = `{python} round(p_value, 3)`). 
+Let's use data to figure out which surgeon performs better. @fig-plot-outcomes shows the post-surgical symptom score for `{python} n_patients` patients. Doc Duck's average post-surgical symptom score is `{python} round(mean_duck, 2)` while Doc Dreamy's average is `{python} round(mean_dreamy, 2)`. `{python} "Doc Duck performs better" if mean_duck < mean_dreamy else "Doc Dreamy performs better"` since lower scores indicate better outcomes. One might ask if the difference in average post-surgical symptom score is statistically significant. A two-sample t-test reveals `{python} "a statistically significant difference" if p_value < 0.05 else "no statistically significant difference"` (t = `{python} round(t_stat, 3)`, p = `{python} round(p_value, 3)`). 
 
 ```{python}
 #| label: fig-plot-outcomes
